@@ -1,3 +1,4 @@
 blueprint:
   plex:
     pkgs: plexmediaserver
+    vars: plex_beta plex_ramdisk

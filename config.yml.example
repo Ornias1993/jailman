@@ -10,12 +10,6 @@ global:
    # Parent downloads dataset 
    # (is going to contain: Complete and Incomplete datasets for downloads)
    downloads: tank/downloads
-  jails:
-   # jail version to install
-   version: 11.3-RELEASE
-   # Global pkgs to install in all jails.
-   # Please use standard space delimited pkg install syntax.
-   pkgs: curl ca_root_nss bash
 
 jail:
   plex: 
@@ -71,23 +65,23 @@ jail:
     gateway: 192.168.1.1
     time_zone: Europe/Amsterdam
     host_name: cloud.example.com
-    db_jail: "mariadb"
+    link_mariadb: "mariadb"
     admin_password: "PUTYOUROWNADMINPASSWORDHERE"
-	db_password: "PLEASEALSOPUTYOURPASSWORDHEREADIFFERNTONE"
+	mariadb_password: "PLEASEALSOPUTYOURPASSWORDHEREADIFFERNTONE"
     
   mariadb: 
     blueprint: mariadb
     ip4_addr: 192.168.1.98/24
     gateway: 192.168.1.1
-    db_root_password: ReplaceThisWithYourOwnRootPAssword
+    root_password: ReplaceThisWithYourOwnRootPAssword
     host_name: mariadb.local.example
   
   bitwarden:
     blueprint: bitwarden
     ip4_addr: 192.168.1.97/24
     gateway: 192.168.1.1
-    db_jail: "mariadb"
-    db_password: "YourDBPasswordHerePLEASE"
+    link_mariadb: "mariadb"
+    mariadb_password: "YourDBPasswordHerePLEASE"
     admin_token: "PUTYOURADMINTOKENHEREANDREMOVETHIS"
 
   influxdb: 
@@ -99,7 +93,7 @@ jail:
     blueprint: unifi
     ip4_addr: 192.168.1.251/24
     gateway: 192.168.1.1
-    unifi_poller: true
-    db_jail: influxdb
-    up_db_password: unifi-poller
-    up_password: upoller
+    poller: true
+    link_influxdb: influxdb
+    influxdb_password: unifi-poller
+    poller_password: upoller

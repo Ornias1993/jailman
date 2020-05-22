@@ -1,0 +1,9 @@
+global:
+  jails:
+   # jail version to install
+   version: 11.3-RELEASE
+   # Global pkgs to install in all jails.
+   # Please use standard space delimited pkg install syntax.
+   pkgs: curl ca_root_nss bash
+   vars: ip4_addr host_name gateway
+   reqvars: 
