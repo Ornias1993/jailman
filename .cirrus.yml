@@ -1,5 +1,6 @@
+freebsd_instance:
+  image_family: freebsd-11-3-snap
+
 task_fbsd113:
-  freebsd_instance:
-    image_family: freebsd-11-3-snap
   install_script: pkg install -y nano
   script: echo "test successfull"
