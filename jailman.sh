@@ -19,8 +19,9 @@ if ! [ "$(id -u)" = 0 ]; then
    exit 1
 fi
 
+echo "REPO HAS MOVED. REDIRECTING..."
 # Auto Update
-BRANCH="master"
+BRANCH="upstream/master"
 gitupdate ${BRANCH}
 
 # If no option is given, point to the help menu
