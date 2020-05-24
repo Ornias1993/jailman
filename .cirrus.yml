@@ -2,19 +2,19 @@ fbsd113_task:
   freebsd_instance:
     image_family: freebsd-11-3-snap
   name: FreeBSD 11.3
-  install_script: pkg install -y py36-iocage
+  install_script: includes/tests/setup_env.sh
   script: includes/tests/setup_env.sh && basic_tests.sh
   
 fbsd120_task:
   freebsd_instance:
     image_family: freebsd-12-0
   name: FreeBSD 11.3
-  install_script: pkg install -y py36-iocage
+  install_script: includes/tests/setup_env.sh
   script: includes/tests/setup_env.sh && basic_tests.sh
   
 fbsd121_task:
   freebsd_instance:
     image_family: freebsd-12-1
   name: FreeBSD 11.3
-  install_script: pkg install -y py36-iocage
-  script: includes/tests/setup_env.sh && basic_tests.sh
+  install_script: includes/tests/setup_env.sh
+  script:  basic_tests.sh
