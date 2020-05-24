@@ -2,8 +2,8 @@ fbsd113_task:
   freebsd_instance:
     image_family: freebsd-11-3-snap
   name: FreeBSD 11.3
-  install_script: includes/tests/setup_env.sh
-  script: includes/tests/basic_tests.sh
+  install_script: includes/CI/setup_env.sh
+  script: includes/CI/basic_tests.sh
   
 #fbsd120_task:
 #  freebsd_instance:
