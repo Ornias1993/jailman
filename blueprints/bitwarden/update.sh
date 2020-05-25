@@ -7,7 +7,7 @@
 JAIL_IP="jail_${1}_ip4_addr"
 JAIL_IP="${!JAIL_IP%/*}"
 HOST_NAME="jail_${1}_host_name"
-DB_DATABASE="jail_${1}_db_datavase"
+DB_DATABASE="jail_${1}_db_database"
 DB_USER="jail_${1}_db_user"
 # shellcheck disable=SC2154
 INSTALL_TYPE="jail_${1}_type"
