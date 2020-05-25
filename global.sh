@@ -59,6 +59,9 @@ jailip4="jail_${1}_ip4_addr"
 jailgateway="jail_${1}_gateway"
 jaildhcp="jail_${1}_dhcp"
 setdhcp=${!jaildhcp}
+blueprintextraconf="$blueprint_${2}_custom_iocage"
+jailextraconf="jail_${1}_custom_iocage"
+setextra="${!blueprintextraconf} ${!jailextraconf}"
 
 if [ -z "${!jailinterfaces}" ]; then 
 	jailinterfaces="vnet0:bridge0"
@@ -78,14 +81,14 @@ echo '{"pkgs":['"${pkgs}"']}' > /tmp/pkg.json
 if [ "${setdhcp}" == "on" ]
 then
 	# shellcheck disable=SC2154
-	if ! iocage create -n "${1}" -p /tmp/pkg.json -r "${global_jails_version}" interfaces="${jailinterfaces}" dhcp="on" vnet="on" allow_raw_sockets="1" boot="on" -b
+	if ! iocage create -n "${1}" -p /tmp/pkg.json -r "${global_jails_version}" interfaces="${jailinterfaces}" dhcp="on" vnet="on" allow_raw_sockets="1" boot="on" ${setextra} -b
 	then
 		echo "Failed to create jail"
 		exit 1
 	fi
 else
 	# shellcheck disable=SC2154
-	if ! iocage create -n "${1}" -p /tmp/pkg.json -r "${global_jails_version}" interfaces="${jailinterfaces}" ip4_addr="vnet0|${!jailip4}" defaultrouter="${!jailgateway}" vnet="on" allow_raw_sockets="1" boot="on" -b
+	if ! iocage create -n "${1}" -p /tmp/pkg.json -r "${global_jails_version}" interfaces="${jailinterfaces}" ip4_addr="vnet0|${!jailip4}" defaultrouter="${!jailgateway}" vnet="on" allow_raw_sockets="1" boot="on" ${setextra} -b
 	then
 		echo "Failed to create jail"
 		exit 1
