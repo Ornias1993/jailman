@@ -20,7 +20,8 @@ if ! [ "$(id -u)" = 0 ]; then
 fi
 
 # Auto Update
-gitupdate ${BRANCH}
+BRANCH="upstream/dev"
+gitupdate "${BRANCH}"
 
 # If no option is given, point to the help menu
 if [ $# -eq 0 ]
