@@ -46,3 +46,4 @@ Some also depend on other jails having a fixed IP in the config file. Use of DHC
 - interfaces: Set the "interfaces" flag for iocage. Example: `vnet0:bridge0` (optional)
 - dhcp: Set to "on" to force DHCP (not required for DHCP, see above)
 - pkgs: Override the to-be-install packages for this jail (might break now or break updates)
+- custom_iocage: Adds additional custom options to iocage create (NOT actively supported, use on your own risk)
