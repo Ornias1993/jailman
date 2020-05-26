@@ -20,7 +20,7 @@ if ! [ "$(id -u)" = 0 ]; then
 fi
 
 # Auto Update
-gitupdate $(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)")
+gitupdate $(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)") || exit 1
 
 # If no option is given, point to the help menu
 if [ $# -eq 0 ]

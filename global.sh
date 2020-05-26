@@ -29,9 +29,9 @@ then
 	echo "The repository has been moved, please reinstall using the new repository: jailmanager/jailman"
 	exit 1
 fi
-if [ "$1" = "HEAD" ];
+if [ "$1" = "" ] || [ "$1" = "HEAD" ];
 then
-	echo "GIT detatched HEAD detected, skipping auto-update"
+	echo "Detatched or invalid GIT HEAD detected, please reinstall"
 else
 	echo "checking for updates using Branch: $1"
 	git fetch > /dev/null 2>&1
@@ -41,7 +41,6 @@ else
 	then
 		echo "script requires update"
 		git reset --hard > /dev/null 2>&1
-		git checkout "${1}" > /dev/null 2>&1
 		git pull > /dev/null 2>&1
 		echo "script updated, please restart the script manually"
 		exit 1
