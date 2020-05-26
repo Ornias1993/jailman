@@ -10,6 +10,7 @@ initblueprint "$1"
 echo "Testvar = ${testvar}"
 echo "required testvar2 = ${testvar2}"
 
+
 echo "linked testjail ip: ${link_testjail_ip4_addr}"
 
 if [ "${reinstall}" = "true" ]; then

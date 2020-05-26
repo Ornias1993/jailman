@@ -54,7 +54,6 @@ createmount "${1}" "${global_dataset_config}"/"${1}"/config /usr/local/www/nextc
 createmount "${1}" "${global_dataset_config}"/"${1}"/themes /usr/local/www/nextcloud/themes
 createmount "${1}" "${global_dataset_config}"/"${1}"/files /config/files
 
-
 iocage exec "${1}" chown -R www:www /config/files
 iocage exec "${1}" chmod -R 770 /config/files
 
@@ -111,7 +110,6 @@ if [ "$cert_type" == "SELFSIGNED_CERT" ] && [ ! -f "/mnt/${global_dataset_config
 		openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=${host_name}" -keyout "${includes_dir}"/privkey.pem -out "${includes_dir}"/fullchain.pem
 	cp "${includes_dir}"/privkey.pem /mnt/"${global_dataset_iocage}"/jails/"$1"/root/config/ssl/privkey.pem
 	cp "${includes_dir}"/fullchain.pem /mnt/"${global_dataset_iocage}"/jails/"$1"/root/config/ssl/fullchain.pem
-
 fi
 
 # Copy and edit pre-written config files
@@ -135,7 +133,6 @@ else
 fi
 
 cp "${includes_dir}"/caddy.rc /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/rc.d/caddy
-
 
 iocage exec "${1}" cp -f /mnt/includes/caddy.rc /usr/local/etc/rc.d/caddy
 iocage exec "${1}" sed -i '' "s/yourhostnamehere/${host_name}/" /usr/local/www/Caddyfile

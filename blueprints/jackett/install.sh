@@ -21,3 +21,4 @@ iocage exec "$1" sysrc "jackett_enable=YES"
 iocage exec "$1" service jackett restart
 
 exitblueprint "$1"
+

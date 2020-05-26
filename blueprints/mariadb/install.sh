@@ -26,13 +26,11 @@ iocage exec "${1}" sysrc mysql_dbdir=/config/db
 iocage exec "${1}" sysrc mysql_pidfile=/config/mysql.pid
 iocage exec "${1}" sysrc mysql_enable="YES"
 
+iocage exec "${1}" mkdir -p /usr/local/www/phpmyadmin
+iocage exec "${1}" chown -R www:www /usr/local/www/phpmyadmin
 
-# Install includes fstab
-iocage exec "${1}" mkdir -p /mnt/includes
-iocage fstab -a "${1}" "${includes_dir}" /mnt/includes nullfs rw 0 0
-
-iocage exec "${1}" cp -f /mnt/includes/my.cnf /config/my.cnf
-iocage exec "${1}" cp -f /mnt/includes/config.inc.php /usr/local/www/phpMyAdmin/config.inc.php
+cp "${includes_dir}"/my.cnf /mnt/"${global_dataset_iocage}"/jails/"$1"/root/config/my.cnf
+cp "${includes_dir}"/config.inc.php /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/www/phpMyAdmin/config.inc.php
 iocage exec "${1}" sed -i '' "s|mypassword|${root_password}|" /config/my.cnf
 iocage exec "${1}" ln -s /config/my.cnf /usr/local/etc/mysql/my.cnf
 
@@ -70,6 +68,7 @@ if [ "${reinstall}" = "true" ]; then
 	echo "Reinstall detected, skipping generaion of new config and database"
 else
 	# Secure database, set root password, create Nextcloud DB, user, and password
+
 	iocage exec "${1}" mysql -u root -e "DELETE FROM mysql.user WHERE User='';"
 	iocage exec "${1}" mysql -u root -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
 	iocage exec "${1}" mysql -u root -e "DROP DATABASE IF EXISTS test;"
@@ -77,6 +76,10 @@ else
 	iocage exec "${1}" mysqladmin --user=root password "${root_password}"
 	iocage exec "${1}" mysqladmin reload
 fi
+
+cp "${includes_dir}"/my.cnf /mnt/"${global_dataset_iocage}"/jails/"$1"/root/root/.my.cnf
+iocage exec "${1}" sed -i '' "s|mypassword|${root_password}|" /root/.my.cnf
+
 
 # Save passwords for later reference
 iocage exec "${1}" echo "MariaDB root password is ${root_password}" > /root/"${1}"_root_password.txt

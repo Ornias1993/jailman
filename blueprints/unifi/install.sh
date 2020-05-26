@@ -84,15 +84,10 @@ else
 
   iocage exec "${1}" sysrc unifi_poller_enable=YES
   iocage exec "${1}" service unifi_poller start
-
-  echo "Please login to the Unifi Controller and add ${poller_user} as a read-only user."
-  echo "In Grafana, add Unifi-Poller as a data source."
-else
-  echo "Installation complete!"
-  echo "Unifi Controller is accessible at https://${ip4_addr%/*}:8443."
   echo "Please login to the Unifi Controller and add ${poller_user} as a read-only user."
   echo "In Grafana, add Unifi-Poller as a data source."
 fi
+
 
 exitblueprint "$1" "Unifi Controller is now accessible at https://${jail_ip}:8443"
 
