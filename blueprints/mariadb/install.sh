@@ -35,6 +35,8 @@ if [ "$(ls -A "/mnt/${global_dataset_config}/${1}/db")" ]; then
 fi
 
 # Mount database dataset and set zfs preferences
+iocage exec "${1}" service mysql-server stop
+iocage exec "${1}" rm -Rf /var/db/mysql
 createmount "${1}" "${global_dataset_config}"/"${1}"/db /var/db/mysql
 zfs set recordsize=16K "${global_dataset_config}"/"${1}"/db
 zfs set primarycache=metadata "${global_dataset_config}"/"${1}"/db
