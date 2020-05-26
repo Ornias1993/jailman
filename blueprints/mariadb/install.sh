@@ -16,8 +16,6 @@ if [ "$(ls -A "/mnt/${global_dataset_config}/${1}/db")" ]; then
 	REINSTALL="true"
 fi
 
-iocage exec "${1}" service mariadb stop
-iocage exec "${1}" rm -Rf /var/db/mysql
 # Mount database dataset and set zfs preferences
 iocage exec "${1}" service mysql-server stop
 iocage exec "${1}" rm -Rf /var/db/mysql
