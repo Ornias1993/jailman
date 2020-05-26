@@ -5,7 +5,7 @@
 #init jail
 initblueprint "$1"
 
-if [[ ! "${unifi_poller}" ]]; then
+if [[ ! "${poller}" ]]; then
 	echo "Skipping Unifi Poller for update, not installed"
 else
 	FILE_NAME=$(curl -s https://api.github.com/repos/unifi-poller/unifi-poller/releases/latest | jq -r ".assets[] | select(.name | contains(\"amd64.txz\")) | .name")

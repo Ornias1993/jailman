@@ -21,3 +21,5 @@ iocage exec "$1" sysrc "transmission_enable=YES"
 iocage exec "$1" sysrc "transmission_conf_dir=/config"
 iocage exec "$1" sysrc "transmission_download_dir=/mnt/downloads/complete"
 iocage exec "$1" service transmission restart
+
+exitblueprint "$1" "Transmission is now accessible at http://${ip4_addr%/*}:9091"

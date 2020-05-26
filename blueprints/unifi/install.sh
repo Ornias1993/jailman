@@ -23,9 +23,8 @@ cp "${includes_dir}"/rc/unifi.rc /mnt/"${global_dataset_iocage}"/jails/"${1}"/ro
 iocage exec "${1}" sysrc unifi_enable=YES
 iocage exec "${1}" service unifi start
 
-if [[ ! "${unifi_poller}" ]]; then
-  echo "Installation complete!"
-  echo "Unifi Controller is accessible at https://${ip4_addr%/*}:8443."
+if [[ ! "${poller}" ]]; then
+  echo "Unifi Poller not selected, skipping Unifi Poller installation."
 else
 	if [ -z "${influxdb_password}" ]; then
 	echo "influxdb_password can't be empty"
@@ -42,6 +41,7 @@ else
 	exit 1
 	fi
   # Check if influxdb container exists, create unifi database if it does, error if it is not.
+  echo "Installing Unifi Poller..."
   echo "Checking if the database jail and database exist..."
   if [[ -d /mnt/"${global_dataset_iocage}"/jails/"${link_influxdb}" ]]; then
     DB_EXISTING=$(iocage exec "${link_influxdb}" curl -G http://"${DB_IP}":8086/query --data-urlencode 'q=SHOW DATABASES' | jq '.results [] | .series [] | .values []' | grep "$influxdb_database" | sed 's/"//g' | sed 's/^ *//g')
@@ -70,8 +70,8 @@ else
 
   # Install downloaded Unifi-Poller package, configure and enable 
   iocage exec "${1}" pkg install -qy /config/"${FILE_NAME}"
-    cp "${includes_dir}"/up.conf /mnt/"${global_dataset_config}"/"${1}"
-    cp "${includes_dir}"/rc/unifi_poller.rc /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.d/unifi_poller
+  cp "${includes_dir}"/up.conf /mnt/"${global_dataset_config}"/"${1}"
+  cp "${includes_dir}"/rc/unifi_poller.rc /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.d/unifi_poller
   chmod +x /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.d/unifi_poller
   iocage exec "${1}" sed -i '' "s|influxdbuser|${influxdb_user}|" /config/up.conf
   iocage exec "${1}" sed -i '' "s|influxdbpass|${influxdb_password}|" /config/up.conf
@@ -84,8 +84,9 @@ else
   iocage exec "${1}" sysrc unifi_poller_enable=YES
   iocage exec "${1}" service unifi_poller start
 
-  echo "Installation complete!"
-  echo "Unifi Controller is accessible at https://${ip4_addr%/*}:8443."
   echo "Please login to the Unifi Controller and add ${poller_user} as a read-only user."
   echo "In Grafana, add Unifi-Poller as a data source."
 fi
+
+exitblueprint "$1" "Unifi Controller is now accessible at https://${ip4_addr%/*}:8443"
+
