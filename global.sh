@@ -24,21 +24,30 @@ parse_yaml() {
 
 # automatic update function
 gitupdate() {
-git remote add upstream https://github.com/jailmanager/jailman.git > /dev/null 2>&1
-echo "checking for updates using Branch: $1"
-git fetch upstream > /dev/null 2>&1
-git update-index -q --refresh > /dev/null 2>&1
-CHANGED=$(git diff --name-only "$1")
-if [ -n "$CHANGED" ];
+if [ "$(git config --get remote.origin.url)" = "https://github.com/Ornias1993/jailman" ]
 then
-    echo "script requires update"
-    git reset --hard > /dev/null 2>&1
-    git checkout "${1}" > /dev/null 2>&1
-    git pull > /dev/null 2>&1
-    echo "script updated, please restart the script manually"
-    exit 1
+	echo "The repository has been moved, please reinstall using the new repository: jailmanager/jailman"
+	exit 1
+fi
+if [ "$1" = "HEAD" ];
+then
+	echo "GIT detatched HEAD detected, skipping auto-update"
 else
-    echo "script up-to-date"
+	echo "checking for updates using Branch: $1"
+	git fetch > /dev/null 2>&1
+	git update-index -q --refresh > /dev/null 2>&1
+	CHANGED=$(git diff --name-only "$1")
+	if [ -n "$CHANGED" ];
+	then
+		echo "script requires update"
+		git reset --hard > /dev/null 2>&1
+		git checkout "${1}" > /dev/null 2>&1
+		git pull > /dev/null 2>&1
+		echo "script updated, please restart the script manually"
+		exit 1
+	else
+		echo "script up-to-date"
+	fi
 fi
 }
 

@@ -20,8 +20,7 @@ if ! [ "$(id -u)" = 0 ]; then
 fi
 
 # Auto Update
-BRANCH="upstream/minor-dev"
-gitupdate "${BRANCH}"
+gitupdate $(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)")
 
 # If no option is given, point to the help menu
 if [ $# -eq 0 ]
