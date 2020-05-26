@@ -32,14 +32,16 @@ iocage exec "${1}" sysrc mysql_dbdir=/config/db
 iocage exec "${1}" sysrc mysql_pidfile=/config/mysql.pid
 iocage exec "${1}" sysrc mysql_enable="YES"
 
+
 # Install includes fstab
 iocage exec "${1}" mkdir -p /mnt/includes
 iocage fstab -a "${1}" "${includes_dir}" /mnt/includes nullfs rw 0 0
 
 iocage exec "${1}" cp -f /mnt/includes/my.cnf /config/my.cnf
 iocage exec "${1}" cp -f /mnt/includes/config.inc.php /usr/local/www/phpMyAdmin/config.inc.php
-iocage exec "${1}" sed -i '' "s|mypassword|${!DB_ROOT_PASSWORD}|" /config/my.cnf
+iocage exec "${1}" sed -i '' "s|mypassword|${root_password}|" /config/my.cnf
 iocage exec "${1}" ln -s /config/my.cnf /usr/local/etc/mysql/my.cnf
+
 
 #####
 # 
@@ -56,8 +58,8 @@ fi
 
 # Copy and edit pre-written config files
 echo "Copying Caddyfile for no SSL"
-iocage exec "${1}" cp -f /mnt/includes/caddy.rc /usr/local/etc/rc.d/caddy
-iocage exec "${1}" cp -f /mnt/includes/Caddyfile /usr/local/www/Caddyfile
+cp "${includes_dir}"/caddy.rc /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/rc.d/caddy
+cp "${includes_dir}"/Caddyfile /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/www/Caddyfile
 iocage exec "${1}" sed -i '' "s/yourhostnamehere/${host_name}/" /usr/local/www/Caddyfile
 iocage exec "${1}" sed -i '' "s/JAIL-IP/${ip4_addr%/*}/" /usr/local/www/Caddyfile
 
@@ -81,17 +83,13 @@ else
 	iocage exec "${1}" mysqladmin reload
 fi
 
+	fi
+
 # Save passwords for later reference
 iocage exec "${1}" echo "MariaDB root password is ${root_password}" > /root/"${1}"_root_password.txt
-	
 
-# Don't need /mnt/includes any more, so unmount it
-iocage fstab -r "${1}" "${includes_dir}" /mnt/includes nullfs rw 0 0
-
-# Done!
-echo "Installation complete!"
-echo "Using your web browser, go to http://${host_name} to log in"
-
+exitblueprint "$1" "MariaDB is now accessible at http://${ip4_addr%/*}"
+echo "All passwords are saved in /root/${1}_db_password.txt"
 if [ "${REINSTALL}" == "true" ]; then
 	echo "You did a reinstall, please use your old database and account credentials"
 else
@@ -100,4 +98,3 @@ else
 	echo "The MariaDB root password is ${root_password}"
 	fi
 echo ""
-echo "All passwords are saved in /root/${1}_db_password.txt"

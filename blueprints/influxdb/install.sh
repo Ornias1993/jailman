@@ -17,7 +17,5 @@ iocage exec "${1}" sysrc influxd_enable="YES"
 iocage exec "${1}" service influxd start
 sleep 15
 
-# Done!
-echo "Installation complete!"
-echo "You may connect InfluxDB plugins to the InfluxDB jail at http://${ip4_addr%/*}:8086."
-echo ""
+exitblueprint "$1" "You may connect InfluxDB plugins to the InfluxDB jail at http://${ip4_addr%/*}:8086."
+

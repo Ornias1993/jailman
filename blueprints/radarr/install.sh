@@ -20,7 +20,9 @@ iocage exec "$1" rm /usr/local/share/Radarr.develop.0.2.0.1480.linux.tar.gz
 iocage exec "$1" "pw user add radarr -c radarr -u 352 -d /nonexistent -s /usr/bin/nologin"
 iocage exec "$1" chown -R radarr:radarr /usr/local/share/Radarr /config
 iocage exec "$1" mkdir /usr/local/etc/rc.d
-cp "${SCRIPT_DIR}"/blueprints/radarr/includes/radarr.rc /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/rc.d/radarr
+cp "${includes_dir}"/radarr.rc /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/rc.d/radarr
 iocage exec "$1" chmod u+x /usr/local/etc/rc.d/radarr
 iocage exec "$1" sysrc "radarr_enable=YES"
 iocage exec "$1" service radarr restart
+
+exitblueprint "$1" "Radarr is now accessible at http://${ip4_addr%/*}:7878"

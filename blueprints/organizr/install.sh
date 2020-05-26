@@ -14,8 +14,8 @@ iocage exec "$1" cp /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 iocage exec "$1" sed -i '' -e 's?;date.timezone =?date.timezone = "Universal"?g' /usr/local/etc/php.ini
 iocage exec "$1" sed -i '' -e 's?;cgi.fix_pathinfo=1?cgi.fix_pathinfo=0?g' /usr/local/etc/php.ini
 mv /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/nginx/nginx.conf /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/nginx/nginx.conf.bak
-cp "${SCRIPT_DIR}"/blueprints/organizr/includes/nginx.conf /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/nginx/nginx.conf
-cp -Rf "${SCRIPT_DIR}"/blueprints/organizr/includes/custom /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/nginx/custom
+cp "${includes_dir}"/nginx.conf /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/nginx/nginx.conf
+cp -Rf "${includes_dir}"/custom /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/nginx/custom
 if [ ! -d "/mnt/${global_dataset_config}/$1/ssl" ]; then
 	echo "cert folder doesn't exist... creating..."
 	iocage exec "$1" mkdir /config/ssl
@@ -35,3 +35,6 @@ iocage exec "$1" sysrc nginx_enable=YES
 iocage exec "$1" sysrc php_fpm_enable=YES
 iocage exec "$1" service nginx start
 iocage exec "$1" service php-fpm start
+
+exitblueprint "$1" "Organizr is now accessible at http://${ip4_addr%/*}"
+

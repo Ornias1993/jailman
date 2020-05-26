@@ -126,7 +126,6 @@ echo "Jail creation completed for ${1}"
 }
 
 initblueprint() {
-
 blueprint=jail_${1}_blueprint
 varlist=blueprint_${!blueprint}_vars
 
@@ -134,11 +133,24 @@ for var in ${!varlist} ${global_jails_vars}
 do
 	value="jail_${1}_$var"
     declare -g "${var}=${!value}"
-	echo "Set variable $var to ${!var}"
 done
+
 declare -g "includes_dir=${SCRIPT_DIR}/blueprints/${!blueprint}/includes"
 }
 export -f initblueprint
+
+exitblueprint() {
+blueprint=jail_${1}_blueprint
+echo "DO NOT DELETE THIS FILE" >> "/mnt/${global_dataset_config}/${1}/INSTALLED"
+echo "Jail $1 using blueprint ${!blueprint}, installed successfully."
+if [[ ! "${2}" ]]; then
+ echo "Please consult the wiki for instructions connecting to your newly installed jail" 
+else
+ echo ${2}
+fi
+
+}
+export -f exitblueprint
 
 # $1 = jail name
 # $2 = Dataset
