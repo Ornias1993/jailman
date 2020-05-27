@@ -2,7 +2,7 @@
 # This file contains the install script for radarr
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 # Initialise defaults
 

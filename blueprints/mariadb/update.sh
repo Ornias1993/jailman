@@ -2,7 +2,7 @@
 # This file contains the update script for mariadb
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 # Initialise defaults
 cert_email="${cert_email:-placeholder@email.fake}"

@@ -2,7 +2,7 @@
 # This file contains the update script for Plex
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 # Initialise defaults
 

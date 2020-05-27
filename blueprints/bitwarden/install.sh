@@ -2,7 +2,7 @@
 # This file contains the install script for bitwarden
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 # Initialise defaults
 admin_token="${admin_token:-$(openssl rand -base64 16)}"

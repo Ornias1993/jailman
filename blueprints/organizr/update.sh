@@ -2,7 +2,7 @@
 # This file contains the update script for Organizr
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 # Initialise defaults
 

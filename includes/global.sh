@@ -125,7 +125,7 @@ echo "Jail creation completed for ${1}"
 
 }
 
-initjail() {
+initblueprint() {
 
 blueprint=jail_${1}_blueprint
 varlist=blueprint_${!blueprint}_vars
@@ -138,7 +138,7 @@ do
 done
 declare -g "includes_dir=${SCRIPT_DIR}/blueprints/${!blueprint}/includes"
 }
-export -f initjail
+export -f initblueprint
 
 # $1 = jail name
 # $2 = Dataset

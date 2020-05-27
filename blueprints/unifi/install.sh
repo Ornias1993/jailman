@@ -2,7 +2,7 @@
 # This file contains the install script for unifi-controller & unifi-poller
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 # Initialize variables
 influxdb_database="${influxdb_database:-$1}"

@@ -2,7 +2,7 @@
 # This script installs the current release of Mariadb and PhpMyAdmin into a created jail
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 # Initialise defaults
 cert_email="${cert_email:-placeholder@email.fake}"

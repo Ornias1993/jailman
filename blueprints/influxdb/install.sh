@@ -2,7 +2,7 @@
 # This script installs the current release of InfluxDB
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 # Initialise defaults
 

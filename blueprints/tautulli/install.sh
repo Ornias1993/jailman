@@ -2,7 +2,7 @@
 # This file contains the install script for Tautulli
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 # Initialise defaults
 

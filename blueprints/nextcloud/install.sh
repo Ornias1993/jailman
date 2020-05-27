@@ -2,7 +2,7 @@
 # This script installs the current release of Nextcloud into a create jail
 # Based on the example by danb35: https://github.com/danb35/freenas-iocage-nextcloud
 
-initjail "$1"
+initblueprint "$1"
 
 # Initialise defaults
 cert_type="${cert_type:-SELFSIGNED_CERT}"

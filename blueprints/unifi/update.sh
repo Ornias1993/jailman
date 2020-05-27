@@ -3,7 +3,7 @@
 # Unifi Controller is updated through pkg, Unifi-Poller is not. This script updates Unifi-Poller
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 if [[ ! "${unifi_poller}" ]]; then
 	echo "Skipping Unifi Poller for update, not installed"

@@ -2,7 +2,7 @@
 # This file contains the install script for jackett
 
 #init jail
-initjail "$1"
+initblueprint "$1"
 
 # Initialise defaults
 
