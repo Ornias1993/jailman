@@ -42,7 +42,6 @@ if [ "$cert_type" == "DNS_CERT" ]; then
 fi  
 
 
-
 #####
 # 
 # Fstab And Mounts

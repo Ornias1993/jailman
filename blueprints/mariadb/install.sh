@@ -9,7 +9,6 @@ cert_email="${cert_email:-placeholder@email.fake}"
 DL_FLAGS=""
 DNS_ENV=""
 
-
 # Mount database dataset and set zfs preferences
 iocage exec "${1}" rm -Rf /usr/local/etc/mysql/my.cnf
 createmount "${1}" "${global_dataset_config}"/"${1}"/db /config/db
