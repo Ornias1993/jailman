@@ -9,6 +9,7 @@ cert_email="${cert_email:-placeholder@email.fake}"
 DL_FLAGS=""
 DNS_ENV=""
 
+
 # Mount database dataset and set zfs preferences
 iocage exec "${1}" rm -Rf /usr/local/etc/mysql/my.cnf
 createmount "${1}" "${global_dataset_config}"/"${1}"/db /config/db
@@ -34,6 +35,7 @@ iocage exec "${1}" cp -f /mnt/includes/my.cnf /config/my.cnf
 iocage exec "${1}" cp -f /mnt/includes/config.inc.php /usr/local/www/phpMyAdmin/config.inc.php
 iocage exec "${1}" sed -i '' "s|mypassword|${root_password}|" /config/my.cnf
 iocage exec "${1}" ln -s /config/my.cnf /usr/local/etc/mysql/my.cnf
+
 
 
 #####
@@ -75,8 +77,6 @@ else
 	iocage exec "${1}" mysqladmin --user=root password "${root_password}"
 	iocage exec "${1}" mysqladmin reload
 fi
-
-	fi
 
 # Save passwords for later reference
 iocage exec "${1}" echo "MariaDB root password is ${root_password}" > /root/"${1}"_root_password.txt

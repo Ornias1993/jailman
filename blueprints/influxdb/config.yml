@@ -2,4 +2,3 @@ blueprint:
   influxdb:
     pkgs: influxdb
     reqvars: ip4_addr
-

@@ -18,4 +18,3 @@ iocage exec "${1}" service influxd start
 sleep 15
 
 exitblueprint "$1" "You may connect InfluxDB plugins to the InfluxDB jail at http://${ip4_addr%/*}:8086."
-

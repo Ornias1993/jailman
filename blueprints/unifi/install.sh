@@ -23,7 +23,6 @@ cp "${includes_dir}"/rc/unifi.rc /mnt/"${global_dataset_iocage}"/jails/"${1}"/ro
 iocage exec "${1}" sysrc unifi_enable=YES
 iocage exec "${1}" service unifi start
 
-
 if [[ ! "${poller}" ]]; then
   echo "Unifi Poller not selected, skipping Unifi Poller installation."
 else
@@ -90,7 +89,9 @@ else
   echo "In Grafana, add Unifi-Poller as a data source."
 else
   echo "Installation complete!"
-  echo "Unifi Controller is accessible at https://${JAIL_IP}:8443."
+  echo "Unifi Controller is accessible at https://${ip4_addr%/*}:8443."
+  echo "Please login to the Unifi Controller and add ${poller_user} as a read-only user."
+  echo "In Grafana, add Unifi-Poller as a data source."
 fi
 
 exitblueprint "$1" "Unifi Controller is now accessible at https://${jail_ip}:8443"

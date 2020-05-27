@@ -5,6 +5,7 @@
 initblueprint "$1"
 
 # Initialise defaults
+
 FILE_NAME=$(curl -s https://api.github.com/repos/Radarr/Radarr/releases | jq -r '[[.[] | select(.draft != true) | select(.prerelease == true)][0] | .assets | .[] | select(.name | endswith(".linux.tar.gz")) | .name][0]')
 DOWNLOAD=$(curl -s https://api.github.com/repos/Radarr/Radarr/releases | jq -r '[[.[] | select(.draft != true) | select(.prerelease == true)][0] | .assets | .[] | select(.name | endswith(".linux.tar.gz")) | .browser_download_url][0]')
 

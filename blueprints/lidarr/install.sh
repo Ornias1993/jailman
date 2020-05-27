@@ -8,6 +8,7 @@ initblueprint "$1"
 FILE_NAME=$(curl -s https://api.github.com/repos/lidarr/Lidarr/releases | jq -r '[[.[] | select(.draft != true) | select(.prerelease == true)][0] | .assets | .[] | select(.name | endswith(".linux.tar.gz")) | .name][0]')
 DOWNLOAD=$(curl -s https://api.github.com/repos/lidarr/Lidarr/releases | jq -r '[[.[] | select(.draft != true) | select(.prerelease == true)][0] | .assets | .[] | select(.name | endswith(".linux.tar.gz")) | .browser_download_url][0]')
 
+
 # Check if dataset for completed download and it parent dataset exist, create if they do not.
 createmount "$1" "${global_dataset_downloads}"
 createmount "$1" "${global_dataset_downloads}"/complete /mnt/fetched
@@ -23,6 +24,7 @@ iocage exec "$1" "pw user add lidarr -c lidarr -u 353 -d /nonexistent -s /usr/bi
 iocage exec "$1" chown -R lidarr:lidarr /usr/local/share/Lidarr /config
 iocage exec "$1" mkdir /usr/local/etc/rc.d
 cp "${includes_dir}"/lidarr.rc /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/rc.d/lidarr
+
 iocage exec "$1" chmod u+x /usr/local/etc/rc.d/lidarr
 iocage exec "$1" sysrc "lidarr_enable=YES"
 iocage exec "$1" service lidarr start

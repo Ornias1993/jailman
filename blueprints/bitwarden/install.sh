@@ -74,6 +74,6 @@ iocage exec "${1}" chmod u+x /usr/local/etc/rc.d/bitwarden
 iocage exec "${1}" sysrc "bitwarden_enable=YES"
 iocage exec "${1}" service bitwarden restart
 
-
 exitblueprint "$1" "Bitwarden is now accessible at https://${jail_ip}:8000"
 echo "Admin Token is ${admin_token}"
+

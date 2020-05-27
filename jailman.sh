@@ -131,7 +131,7 @@ load_config
 
 if [ "${global_version:-}" != "1.3" ]; then
 	echo "You are using old config.yml syntax."
-	echo "Please check the wiki for required changes"
+    echo "Please check the wiki for required changes"
 	exit 1
 fi
 

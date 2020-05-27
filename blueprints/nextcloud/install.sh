@@ -20,40 +20,7 @@ DB_HOST="${!DB_HOST%/*}:3306"
 #
 #####
 
-
-
-# Check that necessary variables were set by nextcloud-config
-if [ -z "${JAIL_IP}" ]; then
-  echo 'Configuration error: The Nextcloud jail does NOT accept DHCP'
-  echo 'Please reinstall using a fixed IP adress'
-  exit 1
-fi
-
-if [ -z "${!ADMIN_PASSWORD}" ]; then
-  echo 'Configuration error: The Nextcloud jail requires a admin_password'
-  echo 'Please reinstall using a fixed IP adress'
-  exit 1
-fi
-
-if [ -z "${!DB_PASSWORD}" ]; then
-  echo 'Configuration error: The Nextcloud Jail needs a database password'
-  echo 'Please reinstall with a defifined: db_password'
-  exit 1
-fi
-
-# shellcheck disable=SC2154
-if [ -z "${!TIME_ZONE}" ]; then
-  echo 'Configuration error: !TIME_ZONE must be set'
-  exit 1
-fi
-if [ -z "${!HOST_NAME}" ]; then
-  echo 'Configuration error: !HOST_NAME must be set'
-  exit 1
-fi
-
-
-
-if [ "$CERT_TYPE" != "STANDALONE_CERT" ] && [ "$CERT_TYPE" != "DNS_CERT" ] && [ "$CERT_TYPE" != "NO_CERT" ] && [ "$CERT_TYPE" != "SELFSIGNED_CERT" ]; then
+if [ "$cert_type" != "STANDALONE_CERT" ] && [ "$cert_type" != "DNS_CERT" ] && [ "$cert_type" != "NO_CERT" ] && [ "$cert_type" != "SELFSIGNED_CERT" ]; then
   echo 'Configuration error, cert_type options: STANDALONE_CERT, DNS_CERT, NO_CERT or SELFSIGNED_CERT'
   exit 1
 fi
@@ -74,6 +41,8 @@ if [ "$cert_type" == "DNS_CERT" ]; then
 	fi 
 fi  
 
+
+
 #####
 # 
 # Fstab And Mounts
@@ -85,6 +54,7 @@ createmount "${1}" "${global_dataset_config}"/"${1}"/config /usr/local/www/nextc
 createmount "${1}" "${global_dataset_config}"/"${1}"/themes /usr/local/www/nextcloud/themes
 createmount "${1}" "${global_dataset_config}"/"${1}"/files /config/files
 
+
 iocage exec "${1}" chown -R www:www /config/files
 iocage exec "${1}" chmod -R 770 /config/files
 
@@ -94,11 +64,6 @@ iocage exec "${1}" chmod -R 770 /config/files
 # Basic dependency install
 #
 #####
-
-
-if [ "${DB_TYPE}" = "mariadb" ]; then
-  iocage exec "${1}" pkg install -qy mariadb104-client php74-pdo_mysql php74-mysqli
-fi
 
 
 fetch -o /tmp https://getcaddy.com
@@ -146,6 +111,7 @@ if [ "$cert_type" == "SELFSIGNED_CERT" ] && [ ! -f "/mnt/${global_dataset_config
 		openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=${host_name}" -keyout "${includes_dir}"/privkey.pem -out "${includes_dir}"/fullchain.pem
 	cp "${includes_dir}"/privkey.pem /mnt/"${global_dataset_iocage}"/jails/"$1"/root/config/ssl/privkey.pem
 	cp "${includes_dir}"/fullchain.pem /mnt/"${global_dataset_iocage}"/jails/"$1"/root/config/ssl/fullchain.pem
+
 fi
 
 # Copy and edit pre-written config files
@@ -170,9 +136,11 @@ fi
 
 cp "${includes_dir}"/caddy.rc /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/rc.d/caddy
 
+
+iocage exec "${1}" cp -f /mnt/includes/caddy.rc /usr/local/etc/rc.d/caddy
 iocage exec "${1}" sed -i '' "s/yourhostnamehere/${host_name}/" /usr/local/www/Caddyfile
 iocage exec "${1}" sed -i '' "s/DNS-PLACEHOLDER/${DNS_SETTING}/" /usr/local/www/Caddyfile
-iocage exec "${1}" sed -i '' "s/JAIL-IP/${jail_ip}/" /usr/local/www/Caddyfile
+iocage exec "${1}" sed -i '' "s/JAIL-IP/${ip4_addr%/*}/" /usr/local/www/Caddyfile
 iocage exec "${1}" sed -i '' "s|mytimezone|${time_zone}|" /usr/local/etc/php.ini
 
 iocage exec "${1}" sysrc caddy_enable="YES"
@@ -188,7 +156,8 @@ else
 	
 	# Secure database, create Nextcloud DB, user, and password
 	iocage exec "mariadb" mysql -u root -e "CREATE DATABASE ${mariadb_database};"
-	iocage exec "mariadb" mysql -u root -e "GRANT ALL ON ${mariadb_database}.* TO ${mariadb_user}@${jail_ip} IDENTIFIED BY '${mariadb_password}';"
+	iocage exec "mariadb" mysql -u root -e "GRANT ALL ON ${mariadb_database}.* TO ${mariadb_user}@${ip4_addr%/*} IDENTIFIED BY '${mariadb_password}';"
+
 	iocage exec "mariadb" mysqladmin reload
 	
 	
@@ -220,7 +189,8 @@ else
 	iocage exec "${1}" su -m www -c 'php /usr/local/www/nextcloud/occ config:system:set htaccess.RewriteBase --value="/"'
 	iocage exec "${1}" su -m www -c 'php /usr/local/www/nextcloud/occ maintenance:update:htaccess'
 	iocage exec "${1}" su -m www -c "php /usr/local/www/nextcloud/occ config:system:set trusted_domains 1 --value=\"${host_name}\""
-	iocage exec "${1}" su -m www -c "php /usr/local/www/nextcloud/occ config:system:set trusted_domains 2 --value=\"${jail_ip}\""
+	iocage exec "${1}" su -m www -c "php /usr/local/www/nextcloud/occ config:system:set trusted_domains 2 --value=\"${ip4_addr%/*}\""
+
 	iocage exec "${1}" su -m www -c 'php /usr/local/www/nextcloud/occ app:enable encryption'
 	iocage exec "${1}" su -m www -c 'php /usr/local/www/nextcloud/occ encryption:enable'
 	iocage exec "${1}" su -m www -c 'php /usr/local/www/nextcloud/occ encryption:disable'

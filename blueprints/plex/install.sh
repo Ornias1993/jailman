@@ -33,7 +33,7 @@ fi
 
 # Create and install hardware transcoding ruleset script
 if [ -z "${hw_transcode}" ] || [ "${hw_transcode}" = "false" ]; then
-  echo "Not configuring hardware transcode"
+	echo "Not configuring hardware transcode"
 else
   if createrulesetscript "${hw_transcode_ruleset}" "${ruleset_script}"; then
     echo "Configuring hardware transcode with ruleset ${hw_transcode_ruleset}."
