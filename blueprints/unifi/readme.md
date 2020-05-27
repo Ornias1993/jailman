@@ -9,10 +9,10 @@
 ### Config Description
 
 - unifi_poller: boolean, true if you want to also install unifi-poller
-- db_jail: This is the name of your influxdb database jail, should be influxdb.
-- unifi_db_name: The name of the database that will be created in influxdb for Unifi Poller.
-- unifi_db_user & unifi_db_password: The created database's credentials for Unifi Poller.
-- up_user & up_password: The Unifi-Poller user credentials. This user must be created in the Unifi Controller web gui after install matching these credentials. This is for the connection between Unifi Controller & Unifi Poller
+- link_influxdb: This is the name of your influxdb database jail, should be influxdb.
+- influxdb_database: The name of the database that will be created in influxdb for Unifi Poller.
+- influxdb_user & influxdb_password: The created database's credentials for Unifi Poller.
+- poller_user & poller_password: The Unifi-Poller user credentials. This user must be created in the Unifi Controller web gui after install matching these credentials. This is for the connection between Unifi Controller & Unifi Poller
 
 ### Unifi-Controller Post-Install
 

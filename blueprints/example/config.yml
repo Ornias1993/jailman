@@ -1,0 +1,5 @@
+blueprint:
+  example:
+    pkgs: nano
+    vars: testvar testvar2
+    reqvars: testvar

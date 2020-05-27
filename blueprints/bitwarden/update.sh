@@ -3,53 +3,18 @@
 # Due to it being build from scratch or downloaded directly to execution dir, 
 # Update for Bitwarden is pretty similair to installation
 
+#init jail
+initblueprint "$1"
+
 # Initialise defaults
-JAIL_IP="jail_${1}_ip4_addr"
-JAIL_IP="${!JAIL_IP%/*}"
-HOST_NAME="jail_${1}_host_name"
-DB_DATABASE="jail_${1}_db_database"
-DB_USER="jail_${1}_db_user"
-# shellcheck disable=SC2154
-INSTALL_TYPE="jail_${1}_type"
-DB_JAIL="jail_${1}_db_jail"
-DB_JAIL="${!DB_JAIL}"
-# shellcheck disable=SC2154
-DB_HOST="${DB_JAIL}_ip4_addr"
+admin_token="${admin_token:-$(openssl rand -base64 16)}"
+mariadb_database="${mariadb_database:-$1}"
+mariadb_user="${mariadb_user:-$1}"
+
+#TODO LINK
+DB_HOST="${link_mariadb}_ip4_addr"
 DB_HOST="${!DB_HOST%/*}:3306"
-# shellcheck disable=SC2154
-DB_PASSWORD="jail_${1}_db_password"
-DB_STRING="mysql://${!DB_USER}:${!DB_PASSWORD}@${DB_HOST}/${!DB_DATABASE}"
-# shellcheck disable=SC2154
-ADMIN_TOKEN="jail_${1}_admin_token"
-
-if [ -z "${!DB_USER}" ]; then
-	echo "db_user can't be empty"
-	exit 1
-fi
-
-if [ -z "${!DB_DATABASE}" ]; then
-	echo "db_database can't be empty"
-	exit 1
-fi
-
-if [ -z "${!DB_PASSWORD}" ]; then
-	echo "db_password can't be empty"
-	exit 1
-fi
-
-if [ -z "${!DB_JAIL}" ]; then
-	echo "db_jail can't be empty"
-	exit 1
-	fi
-
-if [ -z "${!JAIL_IP}" ]; then
-	echo "ip4_addr can't be empty"
-	exit 1
-fi
-
-if [ -z "${!ADMIN_TOKEN}" ]; then
-ADMIN_TOKEN=$(openssl rand -base64 16)
-fi
+DB_STRING="mysql://${mariadb_user}:${mariadb_password}@${DB_HOST}/${mariadb_database}"
 
 iocage exec "${1}" service bitwarden stop
 
@@ -80,21 +45,19 @@ iocage exec "${1}" "tar -xzvf /usr/local/share/bitwarden/bw_web_$WEB_TAG.tar.gz 
 iocage exec "${1}" rm /usr/local/share/bitwarden/bw_web_"$WEB_TAG".tar.gz
 
 iocage exec "${1}" chown -R bitwarden:bitwarden /usr/local/share/bitwarden /config
-# shellcheck disable=SC2154
 cp "${SCRIPT_DIR}"/blueprints/"${1}"/includes/bitwarden.rc /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.d/bitwarden
 cp "${SCRIPT_DIR}"/blueprints/"${1}"/includes/bitwarden.rc.conf /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.conf.d/bitwarden
 echo 'export DATABASE_URL="'"${DB_STRING}"'"' >> /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.conf.d/bitwarden
-echo 'export ADMIN_TOKEN="'"${!ADMIN_TOKEN}"'"' >> /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.conf.d/bitwarden
+echo 'export ADMIN_TOKEN="'"${admin_token}"'"' >> /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.conf.d/bitwarden
 
-if [ "${!ADMIN_TOKEN}" == "NONE" ]; then
+if [ "${admin_token}" == "NONE" ]; then
 	echo "Admin_token set to NONE, disabling admin portal"
 else
 	echo "Admin_token set and admin portal enabled"
-	iocage exec "${1}" echo "${DB_NAME} Admin Token is ${!ADMIN_TOKEN}" > /root/"${1}"_admin_token.txt
+	iocage exec "${1}" echo "${DB_NAME} Admin Token is ${admin_token}" > /root/"${1}"_admin_token.txt
 fi
-
 
 iocage exec "${1}" chmod u+x /usr/local/etc/rc.d/bitwarden
 iocage exec "${1}" service bitwarden restart
 echo "Jail ${1} finished Bitwarden update."
-echo "Admin Token is ${!ADMIN_TOKEN}"
+echo "Admin Token is ${admin_token}"

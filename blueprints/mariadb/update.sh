@@ -1,15 +1,17 @@
 #!/usr/local/bin/bash
 # This file contains the update script for mariadb
 
-# shellcheck disable=SC2154
-JAIL_IP="jail_${1}_ip4_addr"
-JAIL_IP="${!JAIL_IP%/*}"
-HOST_NAME="jail_${1}_host_name"
-INCLUDES_PATH="${SCRIPT_DIR}/blueprints/mariadb/includes"
+#init jail
+initblueprint "$1"
+
+# Initialise defaults
+cert_email="${cert_email:-placeholder@email.fake}"
+DL_FLAGS=""
+DNS_ENV=""
 
 # Install includes fstab
 iocage exec "${1}" mkdir -p /mnt/includes
-iocage fstab -a "${1}" "${INCLUDES_PATH}" /mnt/includes nullfs rw 0 0
+iocage fstab -a "${1}" "${includes_dir}" /mnt/includes nullfs rw 0 0
 
 
 iocage exec "${1}" service caddy stop
@@ -26,12 +28,11 @@ fi
 echo "Copying Caddyfile for no SSL"
 iocage exec "${1}" cp -f /mnt/includes/caddy /usr/local/etc/rc.d/
 iocage exec "${1}" cp -f /mnt/includes/Caddyfile /usr/local/www/Caddyfile
-# shellcheck disable=SC2154
-iocage exec "${1}" sed -i '' "s/yourhostnamehere/${HOST_NAME}/" /usr/local/www/Caddyfile
-iocage exec "${1}" sed -i '' "s/JAIL-IP/${JAIL_IP}/" /usr/local/www/Caddyfile
+iocage exec "${1}" sed -i '' "s/yourhostnamehere/${host_name}/" /usr/local/www/Caddyfile
+iocage exec "${1}" sed -i '' "s/JAIL-IP/${ip4_addr%/*}/" /usr/local/www/Caddyfile
 
 # Don't need /mnt/includes any more, so unmount it
-iocage fstab -r "${1}" "${INCLUDES_PATH}" /mnt/includes nullfs rw 0 0
+iocage fstab -r "${1}" "${includes_dir}" /mnt/includes nullfs rw 0 0
 
 iocage exec "${1}" service caddy start
 iocage exec "${1}" service php-fpm start

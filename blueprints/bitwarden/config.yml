@@ -1,3 +1,5 @@
 blueprint:
   bitwarden:
     pkgs: git sudo bash node npm mariadb104-client
+    vars: admin_token link_mariadb mariadb_database mariadb_user mariadb_password
+    reqvars: ip4_addr link_mariadb mariadb_password

@@ -1,5 +1,9 @@
 # MariaDB
 
+## Configuration Parameters:
+ cert_email: Currently not used, but required due to a caddy bug.
+ root_password: The root password used for MariaDB
+
 ## Original README from the mariadb github:
 
 https://github.com/MariaDB/server/

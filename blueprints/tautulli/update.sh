@@ -1,6 +1,11 @@
 #!/usr/local/bin/bash
 # This file contains the update script for Tautulli
 
+#init jail
+initblueprint "$1"
+
+# Initialise defaults
+
 iocage exec "$1" service tautulli stop
 iocage exec "$1" ln -s /usr/local/bin/python3 /usr/local/bin/python
 # Tautulli is updated through pkg, this is mostly just a placeholder
