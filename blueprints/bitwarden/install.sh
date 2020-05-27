@@ -46,12 +46,12 @@ else
 	openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=localhost" -keyout /mnt/"${global_dataset_config}"/"${1}"/ssl/bitwarden-ssl.key -out /mnt/"${global_dataset_config}"/"${1}"/ssl/bitwarden-ssl.crt
 fi
 
-if [ -f "/mnt/${global_dataset_config}/${1}/bitwarden.log" ]; then
+if [ "${reinstall}" = "true" ]; then
 	echo "Reinstall of Bitwarden detected... using existing config and database"
 else
 	echo "No config detected, doing clean install, utilizing the Mariadb database ${DB_HOST}"
 	iocage exec "${link_mariadb}" mysql -u root -e "CREATE DATABASE ${mariadb_database};"
-		iocage exec "${link_mariadb}" mysql -u root -e "GRANT ALL ON ${mariadb_database}.* TO ${mariadb_user}@${ip4_addr%/*} IDENTIFIED BY '${mariadb_password}';"
+	iocage exec "${link_mariadb}" mysql -u root -e "GRANT ALL ON ${mariadb_database}.* TO ${mariadb_user}@${ip4_addr%/*} IDENTIFIED BY '${mariadb_password}';"
 	iocage exec "${link_mariadb}" mysqladmin reload
 fi
 
