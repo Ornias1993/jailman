@@ -65,6 +65,21 @@ Here at jailman, we value people having their own style. But your code needs to 
 - Jails should not require the user to edit any config file themselves. All config changes should be automated
 - Jails should not use default passwords, the user should always be forced(!) to put credentials in config.yml manually
 
+#### Variable style
+
+Here at JailMan we use a consistant style for variables. We also automated the process of loading the variables from the config file into your blueprint, therefore you need to list all variables and required variables into the config.yml file in your blueprint folder.
+
+The following variables do not need to be included in your blueprint config.yml, because they are always loaded:
+
+ip4_addr
+host_name 
+gateway
+
+The style requirements for your blueprint variables are as follows:
+Simple variables: clear names, no references to other jails. (ex. `admin_token` )
+Referencing another jail: prefix `link_`  suffix a clear description of the jail you are linking. Preferably a blueprint name. (ex. `link_mariadb` )
+For referencing settings for specific applications or other blueprints: prefix: `$blueprintname_` or `$application_` where $blueprint and $application are the names of the blueprint/application the value is used for. (ex. `mariadb_database`)
+
 
 ### Review Guidelines
 ***

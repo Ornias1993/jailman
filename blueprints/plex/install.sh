@@ -19,7 +19,7 @@ createmount "$1" "${global_dataset_media}"/music /mnt/media/music
 createmount "$1" "${global_dataset_media}"/shows /mnt/media/shows
 
 # Create plex ramdisk if specified
-if [ -z "${plex_ramdisk}" ]; then
+if [ -z "${ramdisk}" ]; then
 	echo "no ramdisk specified for plex, continuing without ramdisk"
 else
 	iocage fstab -a "$1" tmpfs /tmp_transcode tmpfs rw,size="${plex_ramdisk}",mode=1777 0 0
@@ -35,7 +35,7 @@ iocage exec "$1" pkg upgrade -y
 iocage exec "$1" pw groupmod -n video -m plex
 
 # Run different install procedures depending on Plex vs Plex Beta
-if [ "$plex_beta" == "true" ]; then
+if [ "$beta" == "true" ]; then
 	echo "beta enabled in config.yml... using plex beta for install"
 	iocage exec "$1" sysrc "plexmediaserver_plexpass_enable=YES"
 	iocage exec "$1" sysrc plexmediaserver_plexpass_support_path="/config"
