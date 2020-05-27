@@ -41,13 +41,6 @@ if [ "$cert_type" == "DNS_CERT" ]; then
 	fi 
 fi  
 
-# Check for existing config
-if [ "$(ls -A "/mnt/${global_dataset_config}/${1}/config")" ]; then
-	echo "Reinstall of Nextcloud detected... "
-	REINSTALL="true"
-fi
-
-
 #####
 # 
 # Fstab And Mounts
@@ -149,7 +142,7 @@ iocage exec "${1}" sysrc caddy_env="${dns_env}"
 
 iocage restart "${1}"
 
-if [ "${REINSTALL}" == "true" ]; then
+if [ "${reinstall}" = "true" ]; then
 	echo "Reinstall detected, skipping generaion of new config and database"
 else
 	
@@ -208,7 +201,7 @@ else
   urltype="https"
 fi
 
-if [ "${REINSTALL}" == "true" ]; then
+if [ "${reinstall}" = "true" ]; then
 	echo "You did a reinstall, please use your old database and account credentials"
 else
 

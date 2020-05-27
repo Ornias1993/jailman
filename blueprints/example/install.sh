@@ -10,6 +10,13 @@ initblueprint "$1"
 echo "Testvar = ${testvar}"
 echo "required testvar2 = ${testvar2}"
 
+echo "linked database ip: ${link_mariadb_ip4_addr}"
+
+if [ "${reinstall}" = "true" ]; then
+	echo "Reinstall detected..."
+else
+	echo "no reinstall detected, normal install proceeding..."
+fi
 
 exitblueprint "$1" "Exampleblueprint installation finished."
 # you can add additional echo output (but only echo output) after the exitblueprint

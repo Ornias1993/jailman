@@ -132,12 +132,36 @@ varlist=blueprint_${!blueprint}_vars
 for var in ${!varlist} ${global_jails_vars}
 do
 	value="jail_${1}_$var"
-    declare -g "${var}=${!value}"
+	val=${!value:-}
+	declare -g "${var}=${val}"
+	
+	if [[ "${var}" =~ ^link_.* ]]; 
+	then
+		linkblueprint=jail_${val}_blueprint
+		linkvarlist=blueprint_${!linkblueprint}_vars
+		for linkvar in ${!linkvarlist} ${global_jails_vars}
+		do
+			linkvalue="jail_${val}_${linkvar}"
+			linkval=${!linkvalue:-}
+			declare -g "${var}_${linkvar}=${linkval}"
+		done
+	fi
 done
 
 declare -g "includes_dir=${SCRIPT_DIR}/blueprints/${!blueprint}/includes"
+
+if [ -f "/mnt/${global_dataset_config}/${1}/INSTALLED" ]; then
+    echo "Reinstall detected..."
+	declare -g reinstall="true"
+elif [ "$(ls -A "/mnt/${global_dataset_config}/${1}/db")" ]; then
+    echo "ERROR, No valid install detected in config directory but files present"
+	exit 1
+else
+	echo "No reinstall flag detected, continuing normal install"
+fi
 }
 export -f initblueprint
+
 
 exitblueprint() {
 blueprint=jail_${1}_blueprint
@@ -152,28 +176,28 @@ fi
 }
 export -f exitblueprint
 
-# $1 = jail name
-# $2 = Dataset
-# $3 = Target mountpoint
-# $4 = fstab prefernces
 createmount() {
-	if [ -z "$2" ] ; then
+jail="${1:-}"
+dataset="${2:-}"
+mountpoint="${3:-}"
+fstab="${4:-}"
+	if [ -z "${dataset}" ] ; then
 		echo "ERROR: No Dataset specified to create and/or mount"
 		exit 1
 	else
-		if [ ! -d "/mnt/$2" ]; then
-			echo "Dataset does not exist... Creating... $2"
-			zfs create "${2}" || exit 1
+		if [ ! -d "/mnt/${dataset}" ]; then
+			echo "Dataset does not exist... Creating... ${dataset}"
+			zfs create "${dataset}" || exit 1
 		else
-			echo "Dataset already exists, skipping creation of $2"
+			echo "Dataset already exists, skipping creation of ${dataset}"
 		fi
 
-		if [ -n "$1" ] && [ -n "$3" ]; then
-			iocage exec "${1}" mkdir -p "${3}"
-			if [ -n "${4}" ]; then
-				iocage fstab -a "${1}" /mnt/"${2}" "${3}" "${4}" || exit 1
+		if [ -n "${jail}" ] && [ -n "${mountpoint}" ]; then
+			iocage exec "${jail}" mkdir -p "${mountpoint}"
+			if [ -n "${fstab}" ]; then
+				iocage fstab -a "${jail}" /mnt/"${dataset}" "${mountpoint}" "${fstab}" || exit 1
 			else
-				iocage fstab -a "${1}" /mnt/"${2}" "${3}" nullfs rw 0 0 || exit 1
+				iocage fstab -a "${jail}" /mnt/"${dataset}" "${mountpoint}" nullfs rw 0 0 || exit 1
 			fi
 		else
 			echo "No Jail Name or Mount target specified, not mounting dataset"

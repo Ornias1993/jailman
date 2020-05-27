@@ -9,13 +9,6 @@ cert_email="${cert_email:-placeholder@email.fake}"
 DL_FLAGS=""
 DNS_ENV=""
 
-
-# Make sure DB_PATH is empty -- if not, MariaDB/PostgreSQL will choke
-if [ "$(ls -A "/mnt/${global_dataset_config}/${1}/db")" ]; then
-	echo "Reinstall of mariadb detected... Continuing"
-	REINSTALL="true"
-fi
-
 # Mount database dataset and set zfs preferences
 iocage exec "${1}" service mysql-server stop
 iocage exec "${1}" rm -Rf /var/db/mysql
@@ -58,7 +51,7 @@ iocage exec "${1}" sysrc caddy_env="${DNS_ENV}"
 iocage restart "${1}"
 sleep 10
 
-if [ "${REINSTALL}" == "true" ]; then
+if [ "${reinstall}" = "true" ]; then
 	echo "Reinstall detected, skipping generaion of new config and database"
 else
 	
@@ -79,7 +72,8 @@ iocage exec "${1}" echo "MariaDB root password is ${root_password}" > /root/"${1
 
 exitblueprint "$1" "MariaDB is now accessible at http://${ip4_addr%/*}"
 echo "All passwords are saved in /root/${1}_db_password.txt"
-if [ "${REINSTALL}" == "true" ]; then
+if [ "${reinstall}" = "true" ]; 
+then
 	echo "You did a reinstall, please use your old database and account credentials"
 else
 	echo "Database Information"
