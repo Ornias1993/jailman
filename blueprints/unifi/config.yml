@@ -1,3 +1,5 @@
 blueprint:
   unifi:
     pkgs: jq unifi5
+    vars: link_influxdb unifi_poller influxdb_database influxdb_user influxdb_password poller_user poller_password
+    reqvars: 

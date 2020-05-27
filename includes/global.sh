@@ -62,6 +62,17 @@ setdhcp=${!jaildhcp}
 blueprintextraconf="$blueprint_${2}_custom_iocage"
 jailextraconf="jail_${1}_custom_iocage"
 setextra="${!blueprintextraconf} ${!jailextraconf}"
+reqvars=blueprint_${2}_reqvars
+reqvars="${!reqvars} ${global_jails_reqvars}"
+
+for reqvar in $reqvars
+do
+	varname=jail_${1}_${reqvar}
+	if [ -z "${!varname}" ]; then
+	echo "$varname can't be empty"
+	exit 1
+	fi
+done
 
 if [ -z "${!jailinterfaces}" ]; then 
 	jailinterfaces="vnet0:bridge0"
@@ -75,19 +86,16 @@ if [ -z "${setdhcp}" ] && [ -z "${!jailip4}" ] && [ -z "${!jailgateway}" ]; then
 fi
 
 echo "Creating jail for $1"
-# shellcheck disable=SC2154
 pkgs="$(sed 's/[^[:space:]]\{1,\}/"&"/g;s/ /,/g' <<<"${global_jails_pkgs} ${!blueprintpkgs}")"
 echo '{"pkgs":['"${pkgs}"']}' > /tmp/pkg.json
 if [ "${setdhcp}" == "on" ]
 then
-	# shellcheck disable=SC2154
 	if ! iocage create -n "${1}" -p /tmp/pkg.json -r "${global_jails_version}" interfaces="${jailinterfaces}" dhcp="on" vnet="on" allow_raw_sockets="1" boot="on" ${setextra} -b
 	then
 		echo "Failed to create jail"
 		exit 1
 	fi
 else
-	# shellcheck disable=SC2154
 	if ! iocage create -n "${1}" -p /tmp/pkg.json -r "${global_jails_version}" interfaces="${jailinterfaces}" ip4_addr="vnet0|${!jailip4}" defaultrouter="${!jailgateway}" vnet="on" allow_raw_sockets="1" boot="on" ${setextra} -b
 	then
 		echo "Failed to create jail"
@@ -97,9 +105,9 @@ fi
 
 rm /tmp/pkg.json
 echo "creating jail config directory"
-# shellcheck disable=SC2154
 createmount "${1}" "${global_dataset_config}" || exit 1
 createmount "${1}" "${global_dataset_config}"/"${1}" /config || exit 1
+
 
 # Create and Mount portsnap
 createmount "${1}" "${global_dataset_config}"/portsnap || exit 1
@@ -116,6 +124,21 @@ fi
 echo "Jail creation completed for ${1}"
 
 }
+
+initblueprint() {
+
+blueprint=jail_${1}_blueprint
+varlist=blueprint_${!blueprint}_vars
+
+for var in ${!varlist} ${global_jails_vars}
+do
+	value="jail_${1}_$var"
+    declare -g "${var}=${!value}"
+	echo "Set variable $var to ${!var}"
+done
+declare -g "includes_dir=${SCRIPT_DIR}/blueprints/${!blueprint}/includes"
+}
+export -f initblueprint
 
 # $1 = jail name
 # $2 = Dataset
@@ -147,3 +170,4 @@ createmount() {
 	fi
 }
 export -f createmount
+
