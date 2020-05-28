@@ -13,7 +13,7 @@
 [ping]
 
 [api]
-  dashboard = true
+  dashboard = dashplaceholder
   insecure = false
 
 [entryPoints]

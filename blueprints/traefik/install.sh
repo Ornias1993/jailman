@@ -61,6 +61,16 @@ else
 	echo "      sniStrict: true" >> /config/dynamic/ssl.yml
 fi
 
+if [ -z "$dashboard" ] || [ "$dashboard" = "false" ];
+then
+	echo "dashboard disabled. Keeping the dashboard disabled..."
+	iocage exec "${1}" sed -i '' "s|dashplaceholder|${false}|" /config/traefik.toml
+else
+	echo "Dashboard set to on, enabling dashboard"
+	iocage exec "${1}" sed -i '' "s|dashplaceholder|${true}|" /config/traefik.toml
+fi
+dashplaceholder
+
 # Setup services
 iocage exec "$1" sysrc "traefik_conf=/config/traefik.toml"
 iocage exec "$1" sysrc "traefik_enable=YES"
@@ -69,4 +79,10 @@ iocage exec "$1" sysrc "firewall_enable=YES"
 iocage exec "$1" service ipfw start
 iocage exec "$1" service traefik start
 
-exitblueprint "${1}" "Traefik installed successfully, you can now connect to the traefik dashboard: https://${domain_name}"
+if [ -z "$dashboard" ] || [ "$dashboard" = "false" ];
+then
+	exitblueprint "${1}" "Traefik installed successfully, but you can not connect to the dashboard, as you had it disabled."
+else
+	exitblueprint "${1}" "Traefik installed successfully, you can now connect to the traefik dashboard: https://${domain_name}"
+fi
+

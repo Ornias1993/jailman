@@ -16,6 +16,7 @@ Here is the list of configuration parameters:
 - dns_provider: The DNS provider you are using to verify ownership of the domain. This is required to get a letsencrypt certificate. We only support DNS-verification for certificate generation.
 - domain_name: The domain name you want to use to connect to traefik. Needs to be accessable at the DNS provider (cert_provider) with the DNS credentials (cert_env) provided.
 - cert_email: The email adress to link to the Lets Encrypt certificate
+- dashboard: set to "true" to enable the dashboard.
 - cert_env: For DNS verification we need login credentials and need to write those in a way Traefik understands. You can find the requirements for your DNS provider at the traefik website: https://docs.traefik.io/https/acme/
 You will need to use 2 spaces(!) in front and enter them below this configuration option. Like this:
 ```
@@ -41,3 +42,5 @@ If you have done it right, you can reach the Traefik admin dashboard using the d
 
 Currently we haven't migrated all jails to sit behind the traefik reverse proxy yet. We also didn't add security for the dashboard yet.
 Thus it is currently not usable out of the box, although the Traefik installation is fully configured.
+
+Although the web interface shows port 9080 and 9443, Traefik is actually also listening on the (more common) port 80 and 443, also known as normal (without port in the URL) http and https ports.
