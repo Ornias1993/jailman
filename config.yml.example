@@ -124,6 +124,7 @@ jail:
     blueprint: traefik
     ip4_addr: 192.168.1.250/24
     gateway: 192.168.1.1
+	dashboard: true
 	domain_name: traefik.test.placeholder.net
 	dns_provider: cloudflare
 	cert_staging: true
