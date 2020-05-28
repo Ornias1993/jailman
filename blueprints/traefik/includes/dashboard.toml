@@ -5,6 +5,11 @@
         scheme = "https"
 
     [http.routers]
+       [http.routers.http-catchall]
+          rule = "hostregexp(`{host:.+}`)"
+          service = "api@internal"
+          entryPoints = ["web"]
+		  middlewares = "redirect-to-https"
        [http.routers.traefik]
           rule = "Host(`placeholderdashboardhost`)"
           service = "api@internal"
