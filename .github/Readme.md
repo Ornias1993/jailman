@@ -95,6 +95,7 @@ Basic means: The same setup as a FreeNAS plugin would've, DHCP on bridge0.
 - sonarr
 - radarr
 - lidarr
+- bazarr
 
 ## Get involved
 
