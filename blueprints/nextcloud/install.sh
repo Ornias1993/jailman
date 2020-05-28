@@ -59,11 +59,6 @@ createmount "${1}" "${global_dataset_config}"/"${1}"/config /usr/local/www/nextc
 createmount "${1}" "${global_dataset_config}"/"${1}"/themes /usr/local/www/nextcloud/themes
 createmount "${1}" "${global_dataset_config}"/"${1}"/files /config/files
 
-# Install includes fstab
-iocage exec "${1}" mkdir -p /mnt/includes
-iocage fstab -a "${1}" "${includes_dir}" /mnt/includes nullfs rw 0 0
-
-
 iocage exec "${1}" chown -R www:www /config/files
 iocage exec "${1}" chmod -R 770 /config/files
 
@@ -116,34 +111,31 @@ if [ "$cert_type" == "SELFSIGNED_CERT" ] && [ ! -f "/mnt/${global_dataset_config
 		iocage exec "${1}" mkdir /config/ssl
 	fi
 		openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=${host_name}" -keyout "${includes_dir}"/privkey.pem -out "${includes_dir}"/fullchain.pem
-	iocage exec "${1}" cp /mnt/includes/privkey.pem /config/ssl/privkey.pem
-	iocage exec "${1}" cp /mnt/includes/fullchain.pem /config/ssl/fullchain.pem
+	cp "${includes_dir}"/privkey.pem /mnt/"${global_dataset_iocage}"/jails/"$1"/root/config/ssl/privkey.pem
+	cp "${includes_dir}"/fullchain.pem /mnt/"${global_dataset_iocage}"/jails/"$1"/root/config/ssl/fullchain.pem
 fi
 
 # Copy and edit pre-written config files
-iocage exec "${1}" cp -f /mnt/includes/php.ini /usr/local/etc/php.ini
-iocage exec "${1}" cp -f /mnt/includes/redis.conf /usr/local/etc/redis.conf
-iocage exec "${1}" cp -f /mnt/includes/www.conf /usr/local/etc/php-fpm.d/
-
+cp "${includes_dir}"/php.ini /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/php.ini
+cp "${includes_dir}"/redis.conf /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/redis.conf
+cp "${includes_dir}"/www.conf /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/php-fpm.d/
 
 if [ "$cert_type" == "STANDALONE_CERT" ] && [ "$cert_type" == "DNS_CERT" ]; then
-	iocage exec "${1}" cp -f /mnt/includes/remove-staging.sh /root/
+	cp "${includes_dir}"/remove-staging.sh /mnt/"${global_dataset_iocage}"/jails/"$1"/root/root/
 fi
 
 if [ "$cert_type" == "NO_CERT" ]; then
 	echo "Copying Caddyfile for no SSL"
-	iocage exec "${1}" cp -f /mnt/includes/Caddyfile-nossl /usr/local/www/Caddyfile
+	cp "${includes_dir}"/Caddyfile-nossl /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/www/Caddyfile
 elif [ "$cert_type" == "SELFSIGNED_CERT" ]; then
 	echo "Copying Caddyfile for self-signed cert"
-	iocage exec "${1}" cp -f /mnt/includes/Caddyfile-selfsigned /usr/local/www/Caddyfile
+	cp "${includes_dir}"/Caddyfile-selfsigned /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/www/Caddyfile
 else
 	echo "Copying Caddyfile for Let's Encrypt cert"
-	iocage exec "${1}" cp -f /mnt/includes/Caddyfile /usr/local/www/
+	cp "${includes_dir}"/Caddyfile /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/www/
 fi
 
-
-iocage exec "${1}" cp -f /mnt/includes/caddy.rc /usr/local/etc/rc.d/caddy
-
+cp "${includes_dir}"/caddy.rc /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/rc.d/caddy
 
 iocage exec "${1}" sed -i '' "s/yourhostnamehere/${host_name}/" /usr/local/www/Caddyfile
 iocage exec "${1}" sed -i '' "s/DNS-PLACEHOLDER/${DNS_SETTING}/" /usr/local/www/Caddyfile
@@ -208,15 +200,12 @@ iocage exec "${1}" chown www /var/log/nextcloud.log
 iocage exec "${1}" su -m www -c 'php -f /usr/local/www/nextcloud/cron.php'
 iocage exec "${1}" crontab -u www /mnt/includes/www-crontab
 
-# Don't need /mnt/includes any more, so unmount it
-iocage fstab -r "${1}" "${includes_dir}" /mnt/includes nullfs rw 0 0
+exitblueprint "$1" "Nextcloud is accessible at ${urltype}://${host_name}"
 
-# Done!
-echo "Installation complete!"
 if [ "$cert_type" == "NO_CERT" ]; then
-  echo "Using your web browser, go to http://${host_name} to log in"
+  urltype="http"
 else
-  echo "Using your web browser, go to https://${host_name} to log in"
+  urltype="https"
 fi
 
 if [ "${REINSTALL}" == "true" ]; then
@@ -252,4 +241,3 @@ elif [ "$cert_type" == "SELFSIGNED_CERT" ]; then
   echo "/config/ssl/fullchain.pem"
   echo ""
 fi
-

@@ -12,7 +12,9 @@ iocage exec "$1" rm /usr/local/share/Jackett.Binaries.Mono.tar.gz
 iocage exec "$1" "pw user add jackett -c jackett -u 818 -d /nonexistent -s /usr/bin/nologin"
 iocage exec "$1" chown -R jackett:jackett /usr/local/share/Jackett /config
 iocage exec "$1" mkdir /usr/local/etc/rc.d
-cp "${SCRIPT_DIR}"/blueprints/jackett/includes/jackett.rc /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/rc.d/jackett
+cp "${includes_dir}"/jackett.rc /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/rc.d/jackett
 iocage exec "$1" chmod u+x /usr/local/etc/rc.d/jackett
 iocage exec "$1" sysrc "jackett_enable=YES"
 iocage exec "$1" service jackett restart
+
+exitblueprint "$1" "Jackett is now accessible at http://${ip4_addr%/*}:9117"

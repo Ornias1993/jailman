@@ -26,7 +26,6 @@ iocage exec "${1}" "git -C /usr/local/share/bitwarden/src checkout ${TAG}"
 
 iocage exec "${1}" "cd /usr/local/share/bitwarden/src && $HOME/.cargo/bin/cargo build --features mysql --release"
 iocage exec "${1}" "cd /usr/local/share/bitwarden/src && $HOME/.cargo/bin/cargo install diesel_cli --no-default-features --features mysql"
-
 iocage exec "${1}" cp -r /usr/local/share/bitwarden/src/target/release /usr/local/share/bitwarden/bin
 
 # Download and install webvault
@@ -59,8 +58,8 @@ fi
 iocage exec "${1}" "pw user add bitwarden -c bitwarden -u 725 -d /nonexistent -s /usr/bin/nologin"
 iocage exec "${1}" chown -R bitwarden:bitwarden /usr/local/share/bitwarden /config
 iocage exec "${1}" mkdir /usr/local/etc/rc.d /usr/local/etc/rc.conf.d
-cp "${SCRIPT_DIR}"/blueprints/bitwarden/includes/bitwarden.rc /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.d/bitwarden
-cp "${SCRIPT_DIR}"/blueprints/bitwarden/includes/bitwarden.rc.conf /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.conf.d/bitwarden
+cp -rf "${includes_dir}/bitwarden.rc" /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.d/bitwarden
+cp -rf "${includes_dir}/bitwarden.rc.conf" /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.conf.d/bitwarden
 echo 'export DATABASE_URL="'"${DB_STRING}"'"' >> /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.conf.d/bitwarden
 echo 'export ADMIN_TOKEN="'"${admin_token}"'"' >> /mnt/"${global_dataset_iocage}"/jails/"${1}"/root/usr/local/etc/rc.conf.d/bitwarden
 
@@ -74,5 +73,7 @@ fi
 iocage exec "${1}" chmod u+x /usr/local/etc/rc.d/bitwarden
 iocage exec "${1}" sysrc "bitwarden_enable=YES"
 iocage exec "${1}" service bitwarden restart
-echo "Jail ${1} finished Bitwarden install."
+
+
+exitblueprint "$1" "Bitwarden is now accessible at https://${ip4_addr%/*}:8000"
 echo "Admin Token is ${admin_token}"

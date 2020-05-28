@@ -9,7 +9,7 @@ initblueprint "$1"
 iocage exec plex mkdir -p /usr/local/etc/pkg/repos
 
 # Change to to more frequent FreeBSD repo to stay up-to-date with plex more.
-cp "${SCRIPT_DIR}"/blueprints/plex/includes/FreeBSD.conf /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/pkg/repos/FreeBSD.conf
+cp "${includes_dir}"/FreeBSD.conf /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/pkg/repos/FreeBSD.conf
 
 
 # Check if datasets for media librarys exist, create them if they do not.
@@ -49,4 +49,4 @@ else
 	iocage exec "$1" service plexmediaserver restart
 fi
 
-echo "Finished installing plex"
+exitblueprint "$1" "Plex is now accessible at https://${ip4_addr%/*}:32400/web/"
