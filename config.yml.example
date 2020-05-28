@@ -1,6 +1,6 @@
 global:
   # Config file syntax version (not same as script version)
-  version: 1.2
+  version: 1.3
   # Relevant dataset paths, please use the ZFS dataset syntax such as: tank/apps
   dataset:
    # dataset for internal jail config files

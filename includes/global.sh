@@ -153,7 +153,7 @@ declare -g "includes_dir=${SCRIPT_DIR}/blueprints/${!blueprint}/includes"
 if [ -f "/mnt/${global_dataset_config}/${1}/INSTALLED" ]; then
     echo "Reinstall detected..."
 	declare -g reinstall="true"
-elif [ "$(ls -A "/mnt/${global_dataset_config}/${1}/db")" ]; then
+elif [ "$(ls -A "/mnt/${global_dataset_config}/${1}/")" ]; then
     echo "ERROR, No valid install detected in config directory but files present"
 	exit 1
 else
