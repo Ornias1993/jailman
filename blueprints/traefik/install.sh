@@ -64,12 +64,11 @@ fi
 if [ -z "$dashboard" ] || [ "$dashboard" = "false" ];
 then
 	echo "dashboard disabled. Keeping the dashboard disabled..."
-	iocage exec "${1}" sed -i '' "s|dashplaceholder|${false}|" /config/traefik.toml
+	iocage exec "${1}" sed -i '' "s|dashplaceholder|false|" /config/traefik.toml
 else
 	echo "Dashboard set to on, enabling dashboard"
-	iocage exec "${1}" sed -i '' "s|dashplaceholder|${true}|" /config/traefik.toml
+	iocage exec "${1}" sed -i '' "s|dashplaceholder|true|" /config/traefik.toml
 fi
-dashplaceholder
 
 # Setup services
 iocage exec "$1" sysrc "traefik_conf=/config/traefik.toml"
