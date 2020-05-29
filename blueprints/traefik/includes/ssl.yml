@@ -12,4 +12,3 @@ tls:
       curvePreferences:
         - CurveP521
         - CurveP384
-
