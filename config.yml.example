@@ -12,114 +12,111 @@ global:
    downloads: tank/downloads
 
 jail:
-  plex:
+  plexjail:
     blueprint: plex
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
     beta: false
 
-  lidarr:
+  lidarrjail:
     blueprint: lidarr
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  sonarr:
+  sonarrjail:
     blueprint: sonarr
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  radarr:
+  radarrjail:
     blueprint: radarr
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  bazarr:
+  bazarrjail:
     blueprint: bazarr
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  kms:
+  kmsjail:
     blueprint: kms
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  jackett:
+  jackettjail:
     blueprint: jackett
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  organizr:
+  organizrjail:
     blueprint: organizr
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  tautulli:
+  tautullijail:
     blueprint: tautulli
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  transmission:
+  transmissionjail:
     blueprint: transmission
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  nextcloud:
+  nextcloudjail:
     blueprint: nextcloud
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
     time_zone: Europe/Amsterdam
     host_name: cloud.example.com
-    link_mariadb: "mariadb"
+    link_mariadb: mariadbjail
     admin_password: "PUTYOUROWNADMINPASSWORDHERE"
     mariadb_password: "PLEASEALSOPUTYOURPASSWORDHEREADIFFERNTONE"
 
-  mariadb:
+  mariadbjail:
     blueprint: mariadb
     ip4_addr: 192.168.1.98/24
     gateway: 192.168.1.1
     root_password: ReplaceThisWithYourOwnRootPAssword
     host_name: mariadb.local.example
 
-  bitwarden:
+  bitwardenjail:
     blueprint: bitwarden
     ip4_addr: 192.168.1.97/24
     gateway: 192.168.1.1
-    link_mariadb: "mariadb"
+    link_mariadb: mariadbjail
     mariadb_password: "YourDBPasswordHerePLEASE"
     admin_token: "PUTYOURADMINTOKENHEREANDREMOVETHIS"
 
-  influxdb:
+  influxdbjail:
     blueprint: influxdb
     ip4_addr: 192.168.1.250/24
     gateway: 192.168.1.1
 
-  unifi:
+  unifijail:
     blueprint: unifi
     ip4_addr: 192.168.1.251/24
     gateway: 192.168.1.1
     poller: true
-    link_influxdb: influxdb
+    link_influxdb: influxdbjail
     influxdb_password: unifi-poller
     poller_password: upoller
 
-  grafana:
+  grafanajail:
     blueprint: grafana
     ip4_addr: 192.168.1.100/24
     gateway: 192.168.1.1
     password: grafana
     link_influxdb: influxdbjail
-    datasource_name: Unifi Controller
-    datasource_database: unifi
-    datasource_user: unifi
-    datasource_password: unifi-poller
+    link_unifi: unifijail
 
-  forked_daapd:
+  forked_daapdjail:
     blueprint: forked_daapd
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
     itunes_media: /mnt/itunes
 
-  traefik:
+  traefikjail:
     blueprint: traefik
     ip4_addr: 192.168.1.250/24
     gateway: 192.168.1.1
@@ -135,7 +132,7 @@ jail:
       CF_API_EMAIL: fake@email.adress
       CF_API_KEY: ftyhsfgufsgusfgjhsfghjsgfhj
 
-  sabnzbd:
+  sabnzbdjail:
     blueprint: sabnzbd
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1

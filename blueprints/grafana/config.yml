@@ -2,5 +2,5 @@ blueprint:
   grafana:
     traefik_service_port: 3000
     pkgs: grafana5
-    vars: link_influxdb datasource_name datasource_database datasource_user datasource_password password
+    vars: link_influxdb link_unifi password
     reqvars: password

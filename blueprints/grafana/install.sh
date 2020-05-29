@@ -20,12 +20,16 @@ iocage exec "${1}" chown -R grafana:grafana /config
 
 # Setup connection to influxdb, if necessary
 if [ -n "${link_influxdb}" ]; then
-  cp "${includes_dir}"/influxdb.yaml /mnt/"${global_dataset_config}"/"${1}"/provisioning/datasources
-  iocage exec "${1}" sed -i '' "s|datasource_name|${datasource_name}|" /config/provisioning/datasources/influxdb.yaml
-  iocage exec "${1}" sed -i '' "s|influxdb_ip|${link_influxdb_jail_ip}|" /config/provisioning/datasources/influxdb.yaml
-  iocage exec "${1}" sed -i '' "s|datasource_db|${datasource_database}|" /config/provisioning/datasources/influxdb.yaml
-  iocage exec "${1}" sed -i '' "s|datasource_user|${datasource_user}|" /config/provisioning/datasources/influxdb.yaml
-  iocage exec "${1}" sed -i '' "s|datasource_pass|${datasource_password}|" /config/provisioning/datasources/influxdb.yaml
+	if [ -n "${link_unifi}" ]; then
+		cp "${includes_dir}"/influxdb.yaml /mnt/"${global_dataset_config}"/"${1}"/provisioning/datasources/unifi.yaml
+		iocage exec "${1}" sed -i '' "s|datasource_name|unifi|" /config/provisioning/datasources/unifi.yaml
+		iocage exec "${1}" sed -i '' "s|influxdb_ip|${link_influxdb_ip4_addr%/*}|" /config/provisioning/datasources/unifi.yaml
+		iocage exec "${1}" sed -i '' "s|datasource_db|${link_unifi_influxdb_database:-$link_unifi}|" /config/provisioning/datasources/unifi.yaml
+		iocage exec "${1}" sed -i '' "s|datasource_user|${link_unifi_influxdb_user:-$link_unifi}|" /config/provisioning/datasources/unifi.yaml
+		iocage exec "${1}" sed -i '' "s|datasource_pass|${link_unifi_influxdb_password:-}|" /config/provisioning/datasources/unifi.yaml
+	fi
+else
+	echo "Sorry, can't setup any grafana connections for you, as you didn't specify link_influxdb correctly..."
 fi
 
 # Set rc vars for startup and start grafana
