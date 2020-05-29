@@ -38,3 +38,4 @@ iocage exec "${1}" sysrc grafana_enable="YES"
 iocage exec "${1}" service grafana start
 
 exitblueprint "${1}"
+

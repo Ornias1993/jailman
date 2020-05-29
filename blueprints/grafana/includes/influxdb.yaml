@@ -11,4 +11,3 @@ datasources:
       password: datasource_pass
     version: 1
     editable: true
-

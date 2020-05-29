@@ -5,6 +5,7 @@
 - link_influxdb (opt): set to the name of the influxdb jail to set as datasource, if desired. 
 - link_unifi (opt): set to the name of the Unifi jail with Unifi Poller to automatically get its data from influxdb. (requires link_influxdb)
 
+
 ##### Datarsource options (opt) are only used if you wish to automatically connect Grafana to an InfluxDB data source (i.e. Unifi Poller).
 
 ## Original README from Grafana github.
