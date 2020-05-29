@@ -10,8 +10,8 @@ DOWNLOAD=$(curl -s https://api.github.com/repos/Jackett/Jackett/releases/latest 
 
 iocage exec "$1" service jackett stop
 
-rm -Rf /usr/local/share/jackett
 # Download and install the package
+rm -Rf /usr/local/share/jackett
 iocage exec "${1}" fetch -o /usr/local/share "${DOWNLOAD}"
 iocage exec "$1" "tar -xzvf /usr/local/share/${FILE_NAME} -C /usr/local/share"
 iocage exec "$1" rm /usr/local/share/${FILE_NAME}
