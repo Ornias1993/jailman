@@ -1,0 +1,4 @@
+ipfw -q -f flush
+cmd="ipfw -q add"
+$cmd 1000 fwd localhost,9080 tcp from any to me 80
+$cmd 1001 fwd localhost,9443 tcp from any to me 443

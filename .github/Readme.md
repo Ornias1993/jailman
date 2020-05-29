@@ -78,6 +78,7 @@ Basic means: The same setup as a FreeNAS plugin would've, DHCP on bridge0.
 - nextcloud
 - bitwarden
 - unifi controller
+- traefik
 
 #### Backend
 - mariadb

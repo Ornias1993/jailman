@@ -120,3 +120,18 @@ jail:
     gateway: 192.168.1.1
     itunes_media: /mnt/itunes
 
+  traefik:
+    blueprint: traefik
+    ip4_addr: 192.168.1.250/24
+    gateway: 192.168.1.1
+	dashboard: true
+	domain_name: traefik.test.placeholder.net
+	dns_provider: cloudflare
+	cert_staging: true
+	cert_email: fake@email.net
+	cert_wildcard_domain: test.placeholder.net
+	# Please follow the guide here: https://docs.traefik.io/https/acme/
+	# and enter your DNS providers environment variables below (2 spaces indent) of cert_env
+	cert_env:
+	  CF_API_EMAIL: fake@email.adress
+	  CF_API_KEY: ftyhsfgufsgusfgjhsfghjsgfhj

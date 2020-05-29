@@ -1,0 +1,20 @@
+[http]
+    # Redirect to https
+    [http.middlewares]
+      [http.middlewares.redirect-to-https.redirectScheme]
+        scheme = "https"
+
+    [http.routers]
+       [http.routers.traefik]
+          rule = "Host(`placeholderdashboardhost`)"
+          service = "api@internal"
+          entryPoints = ["web-secure"]
+        [http.routers.traefik.tls]
+          certResolver = "default" # From static configuration
+          [[http.routers.traefik.tls.domains]]
+            main = "placeholderwildcard"
+            sans = ["*.placeholderwildcard"]
+    [http.services]
+        [http.services.justAdummyService.loadbalancer]
+            [[http.services.justAdummyService.loadbalancer.servers]]
+                url = "http://localhost:1337"

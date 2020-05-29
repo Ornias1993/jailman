@@ -1,0 +1,5 @@
+blueprint:
+  traefik:
+    pkgs: traefik2
+    vars: domain_name cert_email dns_provider cert_wildcard_domain cert_staging cert_strict_sni dashboard
+    reqvars: cert_email dns_provider

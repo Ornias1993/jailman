@@ -1,0 +1,32 @@
+[log]
+  level = "DEBUG"
+  filePath = "/config/traefik.log"
+
+[accessLog]
+  filePath =  "/config/traefik-access.log"
+  bufferingSize =  100
+
+[providers]
+  [providers.file]
+    directory = "/config/dynamic"
+
+[ping]
+
+[api]
+  dashboard = dashplaceholder
+  insecure = false
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":9080"
+  [entryPoints.web-secure]
+    address = ":9443"
+
+[certificatesResolvers.default.acme]
+  email = "placeholderemail"
+  caServer = "leserverplaceholder"
+  storage = "/config/acme.json"
+
+  [certificatesResolvers.default.acme.dnsChallenge]
+    provider = "placeholderprovider"
+    delayBeforeCheck = "5s"
