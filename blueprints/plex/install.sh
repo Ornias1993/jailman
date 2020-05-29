@@ -49,4 +49,4 @@ else
 	iocage exec "$1" service plexmediaserver restart
 fi
 
-exitblueprint "$1" "Plex is now accessible at https://${ip4_addr%/*}:32400/web/"
+exitblueprint "$1" "Plex is now accessible at https://${jail_ip}:32400/web/"

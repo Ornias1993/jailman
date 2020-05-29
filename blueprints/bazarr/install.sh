@@ -21,4 +21,4 @@ iocage exec "$1" chmod u+x /usr/local/etc/rc.d/bazarr
 iocage exec "$1" sysrc "bazarr_enable=YES"
 iocage exec "$1" service bazarr start
 
-exitblueprint "$1" "Bazarr is now accessible at http://${ip4_addr%/*}:6767"
+exitblueprint "$1"

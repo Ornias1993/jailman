@@ -24,4 +24,4 @@ iocage exec "$1" sed -i '' -e 's?complete_dir = Downloads/complete?complete_dir 
 
 iocage exec "$1" service sabnzbd start
 
-exitblueprint "$1" "sabnzbd is now accessible at http://${jail_ip}:8080/"
+exitblueprint "$1"

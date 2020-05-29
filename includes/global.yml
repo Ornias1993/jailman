@@ -5,5 +5,5 @@ global:
    # Global pkgs to install in all jails.
    # Please use standard space delimited pkg install syntax.
    pkgs: curl ca_root_nss bash
-   vars: ip4_addr host_name gateway
+   vars: ip4_addr host_name gateway link_traefik domain_name traefik_service_port traefik_auth_basic traefik_auth_forward
    reqvars: 

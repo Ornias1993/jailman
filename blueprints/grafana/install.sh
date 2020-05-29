@@ -22,7 +22,7 @@ iocage exec "${1}" chown -R grafana:grafana /config
 if [ -n "${link_influxdb}" ]; then
   cp "${includes_dir}"/influxdb.yaml /mnt/"${global_dataset_config}"/"${1}"/provisioning/datasources
   iocage exec "${1}" sed -i '' "s|datasource_name|${datasource_name}|" /config/provisioning/datasources/influxdb.yaml
-  iocage exec "${1}" sed -i '' "s|influxdb_ip|${link_influxdb_ip4_addr%/*}|" /config/provisioning/datasources/influxdb.yaml
+  iocage exec "${1}" sed -i '' "s|influxdb_ip|${link_influxdb_jail_ip}|" /config/provisioning/datasources/influxdb.yaml
   iocage exec "${1}" sed -i '' "s|datasource_db|${datasource_database}|" /config/provisioning/datasources/influxdb.yaml
   iocage exec "${1}" sed -i '' "s|datasource_user|${datasource_user}|" /config/provisioning/datasources/influxdb.yaml
   iocage exec "${1}" sed -i '' "s|datasource_pass|${datasource_password}|" /config/provisioning/datasources/influxdb.yaml
@@ -33,4 +33,4 @@ iocage exec "${1}" sysrc grafana_conf="/config/grafana.conf"
 iocage exec "${1}" sysrc grafana_enable="YES" 
 iocage exec "${1}" service grafana start
 
-exitblueprint "${1}" "Grafana is accessible at https://${ip4_addr%/*}:3000."
+exitblueprint "${1}"

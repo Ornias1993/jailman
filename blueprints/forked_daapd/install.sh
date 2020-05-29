@@ -49,7 +49,7 @@ if [ -z "${JAIL_IP}" ]; then
 	DEFAULT_IF=$(iocage exec "$1" route get default | awk '/interface/ {print $2}')
 	JAIL_IP=$(iocage exec "$1" ifconfig "$DEFAULT_IF" | awk '/inet/ { print $2 }')
 else
-	JAIL_IP=${ip4_addr%/*}
+	JAIL_IP=${jail_ip}
 fi
 
 exitblueprint "$1" "forked-daapd is available at http://${JAIL_IP}:3689/ and via daap."

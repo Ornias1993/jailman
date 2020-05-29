@@ -19,4 +19,4 @@ iocage exec "$1" chmod u+x /usr/local/etc/rc.d/jackett
 iocage exec "$1" sysrc "jackett_enable=YES"
 iocage exec "$1" service jackett restart
 
-exitblueprint "$1" "Jackett is now accessible at http://${ip4_addr%/*}:9117"
+exitblueprint "$1"

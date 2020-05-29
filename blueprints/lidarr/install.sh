@@ -27,4 +27,4 @@ iocage exec "$1" chmod u+x /usr/local/etc/rc.d/lidarr
 iocage exec "$1" sysrc "lidarr_enable=YES"
 iocage exec "$1" service lidarr start
 
-exitblueprint "$1" "Lidarr is now accessible at http://${ip4_addr%/*}:8686"
+exitblueprint "$1"

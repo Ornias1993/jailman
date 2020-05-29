@@ -1,0 +1,3 @@
+[http.middlewares]
+  [http.middlewares.placeholdername-basic-auth.basicAuth]
+   users = [placeholderusers]

@@ -1,0 +1,13 @@
+[http]
+    [http.routers]
+       [http.routers.placeholdername]
+          rule = "Host(`placeholderdashboardhost`)"
+          service = "placeholdername"
+          entryPoints = ["web-secure"]
+		  middlewares = ["retry"]
+        [http.routers.placeholdername.tls]
+          certResolver = "default" # From static configuration
+    [http.services]
+        [http.services.placeholdername.loadbalancer]
+            [[http.services.placeholdername.loadbalancer.servers]]
+                url = "placeholderurl"

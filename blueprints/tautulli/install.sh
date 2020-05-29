@@ -16,4 +16,4 @@ iocage exec "$1" sysrc "tautulli_enable=YES"
 iocage exec "$1" sysrc "tautulli_flags=--datadir /config"
 iocage exec "$1" service tautulli start
 
-exitblueprint "$1" "Tautulli is now accessible at http://${ip4_addr%/*}:8181"
+exitblueprint "$1"

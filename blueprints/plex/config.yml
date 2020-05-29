@@ -1,4 +1,5 @@
 blueprint:
   plex:
+    traefik_service_port: 32400
     pkgs: plexmediaserver
     vars: beta ramdisk

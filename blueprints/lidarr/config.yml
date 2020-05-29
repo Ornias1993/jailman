@@ -1,3 +1,4 @@
 blueprint:
   lidarr: lidarr
+    traefik_service_port: 8686
     pkgs: mono mediainfo sqlite3

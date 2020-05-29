@@ -51,7 +51,7 @@ if [ "${reinstall}" = "true" ]; then
 else
 	echo "No config detected, doing clean install, utilizing the Mariadb database ${DB_HOST}"
 	iocage exec "${link_mariadb}" mysql -u root -e "CREATE DATABASE ${mariadb_database};"
-	iocage exec "${link_mariadb}" mysql -u root -e "GRANT ALL ON ${mariadb_database}.* TO ${mariadb_user}@${ip4_addr%/*} IDENTIFIED BY '${mariadb_password}';"
+	iocage exec "${link_mariadb}" mysql -u root -e "GRANT ALL ON ${mariadb_database}.* TO ${mariadb_user}@${jail_ip} IDENTIFIED BY '${mariadb_password}';"
 	iocage exec "${link_mariadb}" mysqladmin reload
 fi
 
@@ -75,5 +75,5 @@ iocage exec "${1}" sysrc "bitwarden_enable=YES"
 iocage exec "${1}" service bitwarden restart
 
 
-exitblueprint "$1" "Bitwarden is now accessible at https://${ip4_addr%/*}:8000"
+exitblueprint "$1" "Bitwarden is now accessible at https://${jail_ip}:8000"
 echo "Admin Token is ${admin_token}"

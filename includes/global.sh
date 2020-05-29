@@ -173,17 +173,87 @@ export -f initblueprint
 
 
 exitblueprint() {
-blueprint=jail_${1}_blueprint
-echo "DO NOT DELETE THIS FILE" >> "/mnt/${global_dataset_config}/${1}/INSTALLED"
-echo "Jail $1 using blueprint ${!blueprint}, installed successfully."
-if [[ ! "${2}" ]]; then
- echo "Please consult the wiki for instructions connecting to your newly installed jail"
+blueprint="jail_${1}_blueprint" 
+traefik_service_port=" blueprint_${blueprint}_traefik_service_port"
+traefik_service_port="${traefik_service_port}"
+traefikincludes="${SCRIPT_DIR}/blueprints/traefik/includes"
+traefikstatus=""
+
+# Check if the jail is compatible with Traefik and copy the right default-config for the job.
+if [ -z "${link_traefik}" ] || [ -z "${ip4_addr}" ]; then
+	echo "Traefik-connection not enabled... Skipping connecting this jail to traefik"
 else
- echo ${2}
+	echo "removing old traefik config..."
+	rm -f /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}".toml
+	rm -f /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}"_auth_basic.toml
+	rm -f /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}"_auth_forward.toml
+	if [ -z "${domain_name}" ]; then
+		echo "domain_name required for connecting to traefik... please add domain_name to config.yml"
+	elif [ -f "/mnt/${global_dataset_config}/${1}/traefik_custom.toml" ]; then
+		echo "Found custom traefik configuration... Copying to traefik..."
+		cp "${includes_dir}"/traefik_custom.toml /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+		traefikstatus="success"
+	elif [ -f "${includes_dir}/traefik_custom.toml" ]; then
+		echo "Found default traefik configuration for this blueprint... Copying to traefik..."
+		cp "${includes_dir}"/traefik_custom.toml /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+		traefikstatus="preinstalled"
+	elif [ -z "${traefik_service_port}" ]; then 
+		echo "Can't connect this jail to traefik... Please add a traefik_service_port to this jail in config.yml..."
+	else
+		echo "No custom traefik configuration found, using default..."
+		cp "${traefikincludes}"/default.toml /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+		traefikstatus="preinstalled"
+	fi
 fi
 
+# If the default config requires post-processing (it always does except for user-custom config in /config), do the post processing.
+if [ "${traefikstatus}" = "preinstalled" ]; then
+	# replace placeholder values.
+	sed -i '' "s|placeholderdashboardhost|${domain_name}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+	sed -i '' "s|placeholdername|${1}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+	sed -i '' "s|placeholderurl|${jail_ip}:${traefik_service_port}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+	# also replace auth related placeholders, because they can be part of custom config files
+	sed -i '' "s|placeholderusers|${traefik_auth_basic}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+	sed -i '' "s|placeholderauthforward|${traefik_auth_forward}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+	mv /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}".toml
+	if [ -n "${traefik_auth_basic}" ] && [ -n "${traefik_auth_basic}" ]; then 
+		echo "cant setup traefik with both basic AND forward auth. Please pick one only."
+	elif [ -n "${traefik_auth_basic}" ]; then 
+		echo "Adding basic auth to Traefik for jail ${1}"
+		echo "" >> /mnt/"${global_dataset_config}"/"${link_traefik}"/auth/"${1}"_users.auth
+		sed -i '' "s|placeholdername|${1}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_basic.toml
+		sed -i '' "s|placeholderusers|${traefik_auth_basic}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_basic.toml
+		mv /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_basic.toml /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}"_auth_basic.toml
+		traefikstatus="success"
+	elif [ -n "${traefik_auth_forward}" ]; then 
+		echo "Adding basic auth to Traefik for jail ${1}"
+		cp "${traefikincludes}"/default_auth_forward.toml /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}"_auth_forward.toml
+		sed -i '' "s|placeholdername|${1}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_basic.toml
+		sed -i '' "s|placeholderauthforward|${traefik_auth_forward}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_basic.toml
+		mv /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_forward.toml /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}"_auth_forward.toml
+		traefikstatus="success"
+	else
+		echo "No auth specified, setting up traefik without auth..."
+	fi
+fi
+
+# Add a file to flag the jail is INSTALLED and thus trigger reinstall on next install
+echo "DO NOT DELETE THIS FILE" >> "/mnt/${global_dataset_config}/${1}/INSTALLED"
+echo "Jail $1 using blueprint ${!blueprint}, installed successfully."
+
+# Pick the right success message to hint to user how to connect to the jail
+if [ "${traefikstatus}" = "success" ]; then
+	echo "Your jail ${1} running ${!blueprint} is now accessible via Traefik at https://${domain_name}"
+elif [[ ! "${2}" ]]; then
+	echo " ${2}"
+elif [ -n "${traefik_service_port}" ]; then
+	echo "Your jail ${1} running ${!blueprint} is now accessible at http://${jail_ip}:${traefik_service_port}"
+else
+	echo "Please consult the wiki for instructions connecting to your newly installed jail"
+fi
 }
 export -f exitblueprint
+
 
 createmount() {
 	jail=${1:-}

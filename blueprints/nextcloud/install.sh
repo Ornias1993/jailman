@@ -172,7 +172,7 @@ cp "${includes_dir}"/caddy.rc /mnt/"${global_dataset_iocage}"/jails/"$1"/root/us
 
 iocage exec "${1}" sed -i '' "s/yourhostnamehere/${host_name}/" /usr/local/www/Caddyfile
 iocage exec "${1}" sed -i '' "s/DNS-PLACEHOLDER/${DNS_SETTING}/" /usr/local/www/Caddyfile
-iocage exec "${1}" sed -i '' "s/JAIL-IP/${ip4_addr%/*}/" /usr/local/www/Caddyfile
+iocage exec "${1}" sed -i '' "s/JAIL-IP/${jail_ip}/" /usr/local/www/Caddyfile
 iocage exec "${1}" sed -i '' "s|mytimezone|${time_zone}|" /usr/local/etc/php.ini
 
 iocage exec "${1}" sysrc caddy_enable="YES"
@@ -188,7 +188,7 @@ else
 	
 	# Secure database, create Nextcloud DB, user, and password
 	iocage exec "mariadb" mysql -u root -e "CREATE DATABASE ${mariadb_database};"
-	iocage exec "mariadb" mysql -u root -e "GRANT ALL ON ${mariadb_database}.* TO ${mariadb_user}@${ip4_addr%/*} IDENTIFIED BY '${mariadb_password}';"
+	iocage exec "mariadb" mysql -u root -e "GRANT ALL ON ${mariadb_database}.* TO ${mariadb_user}@${jail_ip} IDENTIFIED BY '${mariadb_password}';"
 	iocage exec "mariadb" mysqladmin reload
 	
 	
@@ -220,7 +220,7 @@ else
 	iocage exec "${1}" su -m www -c 'php /usr/local/www/nextcloud/occ config:system:set htaccess.RewriteBase --value="/"'
 	iocage exec "${1}" su -m www -c 'php /usr/local/www/nextcloud/occ maintenance:update:htaccess'
 	iocage exec "${1}" su -m www -c "php /usr/local/www/nextcloud/occ config:system:set trusted_domains 1 --value=\"${host_name}\""
-	iocage exec "${1}" su -m www -c "php /usr/local/www/nextcloud/occ config:system:set trusted_domains 2 --value=\"${ip4_addr%/*}\""
+	iocage exec "${1}" su -m www -c "php /usr/local/www/nextcloud/occ config:system:set trusted_domains 2 --value=\"${jail_ip}\""
 	iocage exec "${1}" su -m www -c 'php /usr/local/www/nextcloud/occ app:enable encryption'
 	iocage exec "${1}" su -m www -c 'php /usr/local/www/nextcloud/occ encryption:enable'
 	iocage exec "${1}" su -m www -c 'php /usr/local/www/nextcloud/occ encryption:disable'

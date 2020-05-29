@@ -27,4 +27,4 @@ iocage exec "$1" chmod u+x /usr/local/etc/rc.d/radarr
 iocage exec "$1" sysrc "radarr_enable=YES"
 iocage exec "$1" service radarr restart
 
-exitblueprint "$1" "Radarr is now accessible at http://${ip4_addr%/*}:7878"
+exitblueprint "$1"

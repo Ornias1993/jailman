@@ -25,4 +25,4 @@ iocage exec "$1" chmod u+x /usr/local/etc/rc.d/sonarr
 iocage exec "$1" sysrc "sonarr_enable=YES"
 iocage exec "$1" service sonarr restart
 
-exitblueprint "$1" "Sonarr is now accessible at http://${ip4_addr%/*}:8989"
+exitblueprint "$1"

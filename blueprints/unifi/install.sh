@@ -93,5 +93,5 @@ else
   echo "Unifi Controller is accessible at https://${JAIL_IP}:8443."
 fi
 
-exitblueprint "$1" "Unifi Controller is now accessible at https://${ip4_addr%/*}:8443"
+exitblueprint "$1" "Unifi Controller is now accessible at https://${jail_ip}:8443"
 

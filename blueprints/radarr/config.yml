@@ -1,3 +1,4 @@
 blueprint:
   radarr:
+    traefik_service_port: 7878
     pkgs: mono mediainfo sqlite3 libgdiplus

@@ -36,5 +36,5 @@ iocage exec "$1" sysrc php_fpm_enable=YES
 iocage exec "$1" service nginx start
 iocage exec "$1" service php-fpm start
 
-exitblueprint "$1" "Organizr is now accessible at http://${ip4_addr%/*}"
+exitblueprint "$1"
 
