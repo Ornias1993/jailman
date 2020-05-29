@@ -1,0 +1,13 @@
+apiVersion: 1
+
+datasources:
+  - name: datasource_name
+    type: influxdb
+    access: proxy
+    url: http://influxdb_ip:8086
+    database: datasource_db
+    user: datasource_user
+    secureJsonData:
+      password: datasource_pass
+    version: 1
+    editable: true

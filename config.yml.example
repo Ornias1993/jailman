@@ -102,3 +102,14 @@ jail:
     link_influxdb: influxdb
     influxdb_password: unifi-poller
     poller_password: upoller
+
+  grafana:
+    blueprint: grafana
+    ip4_addr: 192.168.1.100/24
+    gateway: 192.168.1.1
+    password: grafana
+    link_influxdb: influxdbjail
+    datasource_name: Unifi Controller
+    datasource_database: unifi
+    datasource_user: unifi
+    datasource_password: unifi-poller

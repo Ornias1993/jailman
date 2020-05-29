@@ -7,3 +7,4 @@
 # Code owners for individual blueprints
 /blueprints/influxdb/ @colemamd
 /blueprints/unifi/ @colemamd
+/blueprints/grafana/ @colemamd

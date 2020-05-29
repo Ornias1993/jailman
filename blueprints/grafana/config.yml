@@ -1,0 +1,5 @@
+blueprint:
+  grafana:
+    pkgs: grafana5
+    vars: link_influxdb datasource_name datasource_database datasource_user datasource_password password
+    reqvars: password
