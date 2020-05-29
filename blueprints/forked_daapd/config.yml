@@ -1,0 +1,5 @@
+blueprint:
+  forked_daapd:
+    pkgs: curl alsa-lib avahi avahi-libdns fontconfig fribidi gettext json-c libconfuse libevent libgcrypt libiconv libinotify libplist libsodium libsoxr libunistring libwebsockets nss_mdns openjdk8-jre pkgconf sqlite sqlite3
+    vars: itunes_media
+    reqvars: itunes_media

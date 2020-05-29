@@ -8,3 +8,4 @@
 /blueprints/influxdb/ @colemamd
 /blueprints/unifi/ @colemamd
 /blueprints/grafana/ @colemamd
+/blueprints/forked_daapd/ @asmod3us

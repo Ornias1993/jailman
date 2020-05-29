@@ -12,59 +12,59 @@ global:
    downloads: tank/downloads
 
 jail:
-  plex: 
+  plex:
     blueprint: plex
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
     beta: false
-  
-  lidarr: 
+
+  lidarr:
     blueprint: lidarr
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
-    
-  sonarr: 
+
+  sonarr:
     blueprint: sonarr
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
-    
-  radarr: 
+
+  radarr:
     blueprint: radarr
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  bazarr: 
+  bazarr:
     blueprint: bazarr
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-  kms: 
+  kms:
     blueprint: kms
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
-  
-  jackett: 
+
+  jackett:
     blueprint: jackett
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
-    
-  organizr: 
+
+  organizr:
     blueprint: organizr
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
-    
-  tautulli: 
+
+  tautulli:
     blueprint: tautulli
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
-  
-  transmission: 
+
+  transmission:
     blueprint: transmission
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
-  
-  
-  nextcloud: 
+
+
+  nextcloud:
     blueprint: nextcloud
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
@@ -72,15 +72,15 @@ jail:
     host_name: cloud.example.com
     link_mariadb: "mariadb"
     admin_password: "PUTYOUROWNADMINPASSWORDHERE"
-	mariadb_password: "PLEASEALSOPUTYOURPASSWORDHEREADIFFERNTONE"
-    
-  mariadb: 
+    mariadb_password: "PLEASEALSOPUTYOURPASSWORDHEREADIFFERNTONE"
+
+  mariadb:
     blueprint: mariadb
     ip4_addr: 192.168.1.98/24
     gateway: 192.168.1.1
     root_password: ReplaceThisWithYourOwnRootPAssword
     host_name: mariadb.local.example
-  
+
   bitwarden:
     blueprint: bitwarden
     ip4_addr: 192.168.1.97/24
@@ -89,7 +89,7 @@ jail:
     mariadb_password: "YourDBPasswordHerePLEASE"
     admin_token: "PUTYOURADMINTOKENHEREANDREMOVETHIS"
 
-  influxdb: 
+  influxdb:
     blueprint: influxdb
     ip4_addr: 192.168.1.250/24
     gateway: 192.168.1.1
@@ -113,3 +113,10 @@ jail:
     datasource_database: unifi
     datasource_user: unifi
     datasource_password: unifi-poller
+	
+  forked_daapd:
+    blueprint: forked_daapd
+    ip4_addr: 192.168.1.252/24
+    gateway: 192.168.1.1
+    itunes_media: /mnt/itunes
+
