@@ -126,40 +126,46 @@ echo "Jail creation completed for ${1}"
 }
 
 initblueprint() {
-blueprint=jail_${1}_blueprint
-varlist=blueprint_${!blueprint}_vars
+	blueprint=jail_${1}_blueprint
+	varlist=blueprint_${!blueprint}_vars
 
-for var in ${!varlist} ${global_jails_vars}
-do
-	value="jail_${1}_$var"
-	val=${!value:-}
-	declare -g "${var}=${val}"
-	echo "Set variable $var to ${val}"
-	
-	if [[ "${var}" =~ ^link_.* ]]; 
-	then
-		linkblueprint=jail_${val}_blueprint
-		linkvarlist=blueprint_${!linkblueprint}_vars
-		for linkvar in ${!linkvarlist} ${global_jails_vars}
-		do
-			linkvalue="jail_${val}_${linkvar}"
-			linkval=${!linkvalue:-}
-			declare -g "${var}_${linkvar}=${linkval}"
-		done
+	for var in ${!varlist} ${global_jails_vars}
+	do
+		value="jail_${1}_$var"
+		val=${!value:-}
+		declare -g "${var}=${val}"
+
+		if [[ "${var}" =~ ^link_.* ]]; 
+		then
+			linkblueprint=jail_${val}_blueprint
+			linkvarlist=blueprint_${!linkblueprint}_vars
+			for linkvar in ${!linkvarlist} ${global_jails_vars}
+			do
+				linkvalue="jail_${val}_${linkvar}"
+				linkval=${!linkvalue:-}
+				declare -g "${var}_${linkvar}=${linkval}"
+			done
+		fi
+	done
+
+	declare -g "includes_dir=${SCRIPT_DIR}/blueprints/${!blueprint}/includes"
+
+	if [ -f "/mnt/${global_dataset_config}/${1}/INSTALLED" ]; then
+	    echo "Reinstall detected..."
+		declare -g reinstall="true"
+	elif [ "$(ls -A "/mnt/${global_dataset_config}/${1}/")" ]; then
+	    echo "ERROR, No valid install detected in config directory but files present"
+		exit 1
+	else
+		echo "No reinstall flag detected, continuing normal install"
 	fi
-done
 
-declare -g "includes_dir=${SCRIPT_DIR}/blueprints/${!blueprint}/includes"
-
-if [ -f "/mnt/${global_dataset_config}/${1}/INSTALLED" ]; then
-    echo "Reinstall detected..."
-	declare -g reinstall="true"
-elif [ "$(ls -A "/mnt/${global_dataset_config}/${1}/")" ]; then
-    echo "ERROR, No valid install detected in config directory but files present"
-	exit 1
-else
-	echo "No reinstall flag detected, continuing normal install"
-fi
+	if [ -z "${ip4_addr}" ]; then
+		DEFAULT_IF=$(iocage exec "$1" route get default | awk '/interface/ {print $2}')
+		declare -g "jail_ip=$(iocage exec "$1" ifconfig "$DEFAULT_IF" | awk '/inet/ { print $2 }')"
+	else
+		declare -g "jail_ip=${ip4_addr%/*}"
+	fi
 }
 export -f initblueprint
 

@@ -1,0 +1,3 @@
+blueprint:
+  sabnzbd:
+    pkgs: sabnzbdplus
