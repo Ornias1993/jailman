@@ -1,28 +1,26 @@
-# $1 = devfs ruleset number
-# $2 = script location
+#!/usr/local/bin/bash
+# This file contains the devfs setup for plex hardware transcoding
+
+# ${1} = devfs ruleset number
+# ${2} = script location
 # Creates script for devfs ruleset and i915kms, causes it to execute on boot, and loads it
-# Be Aware: This script is GPLv3 Licenced.
 createrulesetscript() {
 	
 # Some input checks
-  if [ -z "$1" ] ; then
+  if [ -z "${1}" ] ; then
     echo "ERROR: No plex devfs ruleset number specified. This is an internal script error."
     return 1
   fi
-  if [ -z "$2" ] ; then
+  if [ -z "${2}" ] ; then
 	  echo "ERROR: No plex ruleset script location specified."
     return 1
   fi
-  if [ -z "$(echo ${RELEASE} | grep '12.1')" ] && [ -z "$(echo ${RELEASE} | grep '11.3')" ] ; then
-    echo "This script only knows how to enable hardware transcode in FreeNAS 11.3 and TrueNAS 12.0"
-    return 1
-  fi
   IGPU_MODEL=$(lspci | grep Intel | grep Graphics) 
-  if [ ! -z "${IGPU_MODEL}" ] ; then
-    echo "Found Intel GPU model " ${IGPU_MODEL} ", this bodes well."
-    if [ -z "$(kldstat | grep i915kms.ko)" ] ; then
+  if [ -n "${IGPU_MODEL}" ] ; then
+    echo "Found Intel GPU model ${IGPU_MODEL}, this bodes well."
+    if kldstat | grep -qv i915kms.ko; then
       kldload /boot/modules/i915kms.ko
-      if [ -z "$(kldstat | grep i915kms.ko)" ] ; then
+      if kldstat | grep -qv i915kms.ko; then
         echo "Unable to load driver for Intel iGPU, please verify it is supported in this version of FreeNAS/TrueNAS"
         return 1
       fi
@@ -35,13 +33,13 @@ createrulesetscript() {
   fi 
   
 # Create actual script if not already existing
-  if [ ! -f $2 ] ; then
-    echo "Creating script file" $2 
-    cat > $2 <<EOF
+  if [ ! -f "${2}" ] ; then
+    echo "Creating script file ${2}"
+    cat > "${2}" <<EOF
 #!/bin/sh
 echo '[devfsrules_bpfjail=101]
 add path 'bpf*' unhide
-[plex_drm=$1]
+[plex_drm=${1}]
 add include \$devfsrules_hide_all
 add include \$devfsrules_unhide_basic
 add include \$devfsrules_unhide_login
@@ -54,22 +52,22 @@ add path 'drm/*' unhide' >> /etc/devfs.rules
 service devfs restart
 kldload /boot/modules/i915kms.ko
 EOF
-  chmod +x $2
+  chmod +x "${2}"
   else
-    if [ -z "$(grep "plex_drm=$1" $2)" ]; then
-     echo "Script file $2 exists, but does not configure devfs ruleset $1 for Plex as expected."
+    if grep -qv "plex_drm=${1}" "${2}"; then
+     echo "Script file ${2} exists, but does not configure devfs ruleset ${1} for Plex as expected."
      return 1
     fi
   fi
-  if [ -z "$(devfs rule -s $1 show)" ]; then
-    echo "Executing script file $2"
-    $2
+  if [ -z "$(devfs rule -s "${1}" show)" ]; then
+    echo "Executing script file ${2}"
+    ${2}
   fi
 
 # Add the script to load on boot
-  if [ -z "$(midclt call initshutdownscript.query | grep $2)" ]; then
-    echo "Setting script $2 to execute on boot"
-    midclt call initshutdownscript.create "{\"type\": \"SCRIPT\", \"script\": \"$2\", \"when\": \"POSTINIT\", \"enabled\": true, \"timeout\": 10}"
+  if midclt call initshutdownscript.query | grep -qv "${2}"; then
+    echo "Setting script ${2} to execute on boot"
+    midclt call initshutdownscript.create "{\"type\": \"SCRIPT\", \"script\": \"${2}\", \"when\": \"POSTINIT\", \"enabled\": true, \"timeout\": 10}"
   fi
   return 0
 }

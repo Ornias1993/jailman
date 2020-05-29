@@ -6,11 +6,11 @@ initblueprint "$1"
 
 # Initialise defaults
 hw_transcode_ruleset="${hw_transcode_ruleset:-10}"
-devfs_ruleset="${devfs_ruleset:-}"
 script_default_path="/root/plex-ruleset.sh"
 ruleset_script="${ruleset_script:-$script_default_path}"
 
 # Source additional files with functions
+# shellcheck source=blueprints/plex/includes/hw_transcoding.sh
 source "${includes_dir}/hw_transcoding.sh"
 
 # Change to to more frequent FreeBSD repo to stay up-to-date with plex more.
@@ -35,13 +35,11 @@ fi
 if [ -z "${hw_transcode}" ] || [ "${hw_transcode}" = "false" ]; then
   echo "Not configuring hardware transcode"
 else
-  if createrulesetscript ${hw_transcode_ruleset} ${ruleset_script}; then
+  if createrulesetscript "${hw_transcode_ruleset}" "${ruleset_script}"; then
     echo "Configuring hardware transcode with ruleset ${hw_transcode_ruleset}."
-    devfs_ruleset="devfs_ruleset=${hw_transcode_ruleset}"
+	iocage set devfs_ruleset="${hw_transcode_ruleset}" " ${1}"
   else
     echo "Not configuring hardware transcode automatically, please do it manually."
-    devfs_ruleset=""
-    hw_transcode_ruleset="0"
   fi
 fi
 
@@ -73,7 +71,7 @@ else
 fi
 
 # Work around a FreeBSD 11.3 devfs issue
-if [ ! -z "$(echo ${RELEASE} | grep '11.3')" ] && [ -z "${hw_transcode}" ] || [ "${hw_transcode}" = "false" ]; then
+if [ -z "${hw_transcode}" ] || [ "${hw_transcode}" = "false" ]; then
   iocage stop "${1}"
   service devfs restart
   iocage start "${1}"
