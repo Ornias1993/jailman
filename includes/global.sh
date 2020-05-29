@@ -134,6 +134,7 @@ do
 	value="jail_${1}_$var"
 	val=${!value:-}
 	declare -g "${var}=${val}"
+	echo "Set variable $var to ${val}"
 	
 	if [[ "${var}" =~ ^link_.* ]]; 
 	then
@@ -168,7 +169,7 @@ blueprint=jail_${1}_blueprint
 echo "DO NOT DELETE THIS FILE" >> "/mnt/${global_dataset_config}/${1}/INSTALLED"
 echo "Jail $1 using blueprint ${!blueprint}, installed successfully."
 if [[ ! "${2}" ]]; then
- echo "Please consult the wiki for instructions connecting to your newly installed jail" 
+ echo "Please consult the wiki for instructions connecting to your newly installed jail"
 else
  echo ${2}
 fi
@@ -177,10 +178,11 @@ fi
 export -f exitblueprint
 
 createmount() {
-jail="${1:-}"
-dataset="${2:-}"
-mountpoint="${3:-}"
-fstab="${4:-}"
+	jail=${1:-}
+	dataset=${2:-}
+	mountpoint=${3:-}
+	fstab=${4:-}
+
 	if [ -z "${dataset}" ] ; then
 		echo "ERROR: No Dataset specified to create and/or mount"
 		exit 1

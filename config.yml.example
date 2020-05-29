@@ -73,6 +73,7 @@ jail:
     admin_password: "PUTYOUROWNADMINPASSWORDHERE"
     mariadb_password: "PLEASEALSOPUTYOURPASSWORDHEREADIFFERNTONE"
 
+
   mariadbjail:
     blueprint: mariadb
     ip4_addr: 192.168.1.98/24
@@ -141,5 +142,4 @@ jail:
     blueprint: sabnzbd3
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
-
 
