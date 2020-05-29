@@ -76,3 +76,4 @@ iocage exec "${1}" service bitwarden restart
 
 exitblueprint "$1" "Bitwarden is now accessible at https://${jail_ip}:8000"
 echo "Admin Token is ${admin_token}"
+

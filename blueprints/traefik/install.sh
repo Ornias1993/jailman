@@ -18,6 +18,7 @@ cp "${includes_dir}"/firewall.rules /mnt/"${global_dataset_config}"/"${1}"/
 cp "${includes_dir}"/ssl.yml /mnt/"${global_dataset_config}"/"${1}"/dynamic/
 cp "${includes_dir}"/buildin_middlewares.toml /mnt/"${global_dataset_config}"/"${1}"/dynamic/buildin_middlewares.toml
 
+cp "${includes_dir}"/buildin_middlewares.toml /mnt/"${global_dataset_config}"/"${1}"/dynamic/buildin_middlewares.toml
 if [ -z "$cert_wildcard_domain" ];
 then
 	echo "wildcard not set, using non-wildcard config..."

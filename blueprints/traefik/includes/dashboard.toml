@@ -1,9 +1,4 @@
 [http]
-    # Redirect to https
-    [http.middlewares]
-      [http.middlewares.redirect-to-https.redirectScheme]
-        scheme = "https"
-
     [http.routers]
        [http.routers.http-catchall]
           rule = "hostregexp(`{host:.+}`)"

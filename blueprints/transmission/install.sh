@@ -23,4 +23,3 @@ iocage exec "$1" sysrc "transmission_download_dir=/mnt/downloads/complete"
 iocage exec "$1" service transmission restart
 
 exitblueprint "$1"
-

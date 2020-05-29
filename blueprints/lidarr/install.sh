@@ -31,4 +31,3 @@ iocage exec "$1" sysrc "lidarr_enable=YES"
 iocage exec "$1" service lidarr start
 
 exitblueprint "$1"
-

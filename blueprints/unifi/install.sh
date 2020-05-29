@@ -88,6 +88,5 @@ else
   echo "In Grafana, add Unifi-Poller as a data source."
 fi
 
-
 exitblueprint "$1" "Unifi Controller is now accessible at https://${jail_ip}:8443"
 
