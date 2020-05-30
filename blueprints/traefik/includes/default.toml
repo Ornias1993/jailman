@@ -10,4 +10,4 @@
     [http.services]
         [http.services.placeholdername.loadbalancer]
             [[http.services.placeholdername.loadbalancer.servers]]
-                url = "placeholderurl"
+                url = "http://placeholderurl"
