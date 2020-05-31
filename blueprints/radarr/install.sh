@@ -5,6 +5,8 @@
 initblueprint "$1"
 
 # Initialise defaults
+FILE_NAME=$(curl -s https://api.github.com/repos/Radarr/Radarr/releases | jq -r '[[.[] | select(.draft != true) | select(.prerelease == true)][0] | .assets | .[] | select(.name | endswith(".linux.tar.gz")) | .name][0]')
+DOWNLOAD=$(curl -s https://api.github.com/repos/Radarr/Radarr/releases | jq -r '[[.[] | select(.draft != true) | select(.prerelease == true)][0] | .assets | .[] | select(.name | endswith(".linux.tar.gz")) | .browser_download_url][0]')
 
 # Check if dataset for completed download and it parent dataset exist, create if they do not.
 createmount "$1" "${global_dataset_downloads}"
@@ -14,9 +16,9 @@ createmount "$1" "${global_dataset_downloads}"/complete /mnt/fetched
 createmount "$1" "${global_dataset_media}"
 createmount "$1" "${global_dataset_media}"/movies /mnt/movies
 
-iocage exec "$1" "fetch https://github.com/Radarr/Radarr/releases/download/v0.2.0.1480/Radarr.develop.0.2.0.1480.linux.tar.gz -o /usr/local/share"
-iocage exec "$1" "tar -xzvf /usr/local/share/Radarr.develop.0.2.0.1480.linux.tar.gz -C /usr/local/share"
-iocage exec "$1" rm /usr/local/share/Radarr.develop.0.2.0.1480.linux.tar.gz
+iocage exec "${1}" fetch -o /usr/local/share "${DOWNLOAD}"
+iocage exec "$1" "tar -xzvf /usr/local/share/${FILE_NAME} -C /usr/local/share"
+iocage exec "$1" rm /usr/local/share/"${FILE_NAME}"
 iocage exec "$1" "pw user add radarr -c radarr -u 352 -d /nonexistent -s /usr/bin/nologin"
 iocage exec "$1" chown -R radarr:radarr /usr/local/share/Radarr /config
 iocage exec "$1" mkdir /usr/local/etc/rc.d
