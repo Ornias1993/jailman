@@ -10,7 +10,7 @@ DOWNLOAD=$(curl -s https://api.github.com/repos/Jackett/Jackett/releases/latest 
 
 iocage exec "${1}" fetch -o /usr/local/share "${DOWNLOAD}"
 iocage exec "$1" "tar -xzvf /usr/local/share/${FILE_NAME} -C /usr/local/share"
-iocage exec "$1" rm /usr/local/share/${FILE_NAME}
+iocage exec "$1" rm /usr/local/share/"${FILE_NAME}"
 iocage exec "$1" "pw user add jackett -c jackett -u 818 -d /nonexistent -s /usr/bin/nologin"
 iocage exec "$1" chown -R jackett:jackett /usr/local/share/Jackett /config
 iocage exec "$1" mkdir /usr/local/etc/rc.d

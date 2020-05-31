@@ -18,7 +18,7 @@ createmount "$1" "${global_dataset_media}"/music /mnt/music
   
 iocage exec "${1}" fetch -o /usr/local/share "${DOWNLOAD}"
 iocage exec "$1" "tar -xzvf /usr/local/share/${FILE_NAME} -C /usr/local/share"
-iocage exec "$1" rm /usr/local/share/${FILE_NAME}
+iocage exec "$1" rm /usr/local/share/"${FILE_NAME}"
 iocage exec "$1" "pw user add lidarr -c lidarr -u 353 -d /nonexistent -s /usr/bin/nologin"
 iocage exec "$1" chown -R lidarr:lidarr /usr/local/share/Lidarr /config
 iocage exec "$1" mkdir /usr/local/etc/rc.d
