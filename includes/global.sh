@@ -215,12 +215,14 @@ if [ "${traefikstatus}" = "preinstalled" ]; then
 	# also replace auth related placeholders, because they can be part of custom config files
 	sed -i '' "s|placeholderusers|${traefik_auth_basic//&/\\&}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
 	sed -i '' "s|placeholderauthforward|${traefik_auth_forward//&/\\&}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
-	if [ -n "${traefik_auth_basic}" ] && [ -n "${traefik_auth_basic}" ]; then 
+	if [ -n "${traefik_auth_forward}" ] && [ -n "${traefik_auth_basic}" ]; then 
 		echo "cant setup traefik with both basic AND forward auth. Please pick one only."
 	elif [ -n "${traefik_auth_basic}" ]; then 
 		echo "Adding basic auth to Traefik for jail ${1}"
+		users="$(sed 's/[^[:space:]]\{1,\}/"&"/g;s/ /,/g' <<<"${traefik_auth_basic}")"
+		cp "${traefikincludes}"/default_auth_basic.toml /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_basic.toml
 		sed -i '' "s|placeholdername|${1//&/\\&}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_basic.toml
-		sed -i '' "s|placeholderusers|${traefik_auth_basic//&/\\&}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_basic.toml
+		sed -i '' "s|placeholderusers|${users//&/\\&}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_basic.toml
 		mv /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}"_auth_basic.toml /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}"_auth_basic.toml
 		sed -i '' "s|\"retry\"|\"retry\",\"${1//&/\\&}-basic-auth\"|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
 		traefikstatus="success"
