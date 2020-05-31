@@ -124,8 +124,8 @@ else
 	echo "jails to destroy ${destroyjails[@]}"
 	for jail in "${destroyjails[@]}"
 	do
-		echo "destroying $jail"
 		iocage destroy -f "${jail}"
+		cleanupblueprint "${jail}"
 	done
 
 fi
@@ -170,7 +170,7 @@ else
 		elif [ -f "${SCRIPT_DIR}/blueprints/${!blueprint}/install.sh" ]
 		then
 			echo "Reinstalling $jail"
-			iocage destroy -f "${jail}" && jailcreate "${jail}" "${!blueprint}" && "${SCRIPT_DIR}"/blueprints/"${!blueprint}"/install.sh "${jail}"
+			iocage destroy -f "${jail}" && cleanupblueprint "${jail}" && jailcreate "${jail}" "${!blueprint}" && "${SCRIPT_DIR}"/blueprints/"${!blueprint}"/install.sh "${jail}"
 		else
 			echo "Missing blueprint ${!blueprint} for $jail in ${SCRIPT_DIR}/blueprints/${!blueprint}/install.sh"
 			exit 1

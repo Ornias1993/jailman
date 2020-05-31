@@ -171,6 +171,17 @@ initblueprint() {
 }
 export -f initblueprint
 
+cleanupblueprint() {
+	link_traefik="jail_${1}_link_traefik"
+	link_traefik="${!link_traefik:-}"
+	if [ -n "${link_traefik}" ]; then
+		echo "removing remains..."
+		rm -f /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}".toml
+		rm -f /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}"_auth_basic.toml
+		rm -f /mnt/"${global_dataset_config}"/"${link_traefik}"/dynamic/"${1}"_auth_forward.toml
+	fi
+}
+export -f initblueprint
 
 exitblueprint() {
 blueprint="jail_${1}_blueprint" 
