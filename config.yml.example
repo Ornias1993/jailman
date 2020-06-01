@@ -63,7 +63,6 @@ jail:
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
-
   nextcloud:
     blueprint: nextcloud
     ip4_addr: 192.168.1.99/24
@@ -116,7 +115,7 @@ jail:
 
   forked_daapd:
     blueprint: forked_daapd
-    ip4_addr: 192.168.1.252/24
+    ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
     itunes_media: /mnt/itunes
 
@@ -141,3 +140,7 @@ jail:
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
 
+  sabnzbd3:
+    blueprint: sabnzbd3
+    ip4_addr: 192.168.1.99/24
+    gateway: 192.168.1.1

@@ -198,7 +198,6 @@ else
 			iocage update "${jail}"
 			iocage exec "${jail}" "pkg update && pkg upgrade -y" && "${SCRIPT_DIR}"/blueprints/"${!blueprint}"/update.sh "${jail}"
 			iocage restart "${jail}"
-			iocage start "${jail}"
 		else
 			echo "Missing blueprint ${!blueprint} for $jail in ${SCRIPT_DIR}/blueprints/${!blueprint}/install.sh"
 			exit 1
