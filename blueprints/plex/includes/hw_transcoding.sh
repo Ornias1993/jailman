@@ -18,9 +18,9 @@ createrulesetscript() {
   IGPU_MODEL=$(lspci | grep Intel | grep Graphics) 
   if [ -n "${IGPU_MODEL}" ] ; then
     echo "Found Intel GPU model ${IGPU_MODEL}, this bodes well."
-    if kldstat | grep -qv i915kms.ko; then
+    if ! kldstat | grep -q i915kms.ko; then
       kldload /boot/modules/i915kms.ko
-      if kldstat | grep -qv i915kms.ko; then
+      if ! kldstat | grep -q i915kms.ko; then
         echo "Unable to load driver for Intel iGPU, please verify it is supported in this version of FreeNAS/TrueNAS"
         return 1
       fi
@@ -54,7 +54,7 @@ kldload /boot/modules/i915kms.ko
 EOF
   chmod +x "${2}"
   else
-    if grep -qv "plex_drm=${1}" "${2}"; then
+    if ! grep -q "plex_drm=${1}" "${2}"; then
      echo "Script file ${2} exists, but does not configure devfs ruleset ${1} for Plex as expected."
      return 1
     fi
@@ -65,7 +65,7 @@ EOF
   fi
 
 # Add the script to load on boot
-  if midclt call initshutdownscript.query | grep -qv "${2}"; then
+  if ! midclt call initshutdownscript.query | grep -q "${2}"; then
     echo "Setting script ${2} to execute on boot"
     midclt call initshutdownscript.create "{\"type\": \"SCRIPT\", \"script\": \"${2}\", \"when\": \"POSTINIT\", \"enabled\": true, \"timeout\": 10}"
   fi
