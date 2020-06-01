@@ -12,6 +12,9 @@
 
 [ping]
 
+[serversTransport]
+  insecureSkipVerify = true
+
 [api]
   dashboard = dashplaceholder
   insecure = false

@@ -35,17 +35,6 @@ iocage exec "${1}" "fetch http://github.com/dani-garcia/bw_web_builds/releases/d
 iocage exec "${1}" "tar -xzvf /usr/local/share/bitwarden/bw_web_$WEB_TAG.tar.gz -C /usr/local/share/bitwarden/"
 iocage exec "${1}" rm /usr/local/share/bitwarden/bw_web_"$WEB_TAG".tar.gz
 
-if [ -f "/mnt/${global_dataset_config}/${1}/ssl/bitwarden-ssl.crt" ]; then
-    echo "certificate exist... Skipping cert generation"
-else
-	"No ssl certificate present, generating self signed certificate"
-	if [ ! -d "/mnt/${global_dataset_config}/${1}/ssl" ]; then
-		echo "cert folder not existing... creating..."
-		iocage exec "${1}" mkdir /config/ssl
-	fi
-	openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=localhost" -keyout /mnt/"${global_dataset_config}"/"${1}"/ssl/bitwarden-ssl.key -out /mnt/"${global_dataset_config}"/"${1}"/ssl/bitwarden-ssl.crt
-fi
-
 if [ "${reinstall}" = "true" ]; then
 	echo "Reinstall of Bitwarden detected... using existing config and database"
 else
@@ -74,6 +63,6 @@ iocage exec "${1}" chmod u+x /usr/local/etc/rc.d/bitwarden
 iocage exec "${1}" sysrc "bitwarden_enable=YES"
 iocage exec "${1}" service bitwarden restart
 
-exitblueprint "$1" "Bitwarden is now accessible at https://${jail_ip}:8000"
+exitblueprint "$1"
 echo "Admin Token is ${admin_token}"
 

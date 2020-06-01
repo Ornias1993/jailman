@@ -68,7 +68,7 @@ jail:
     ip4_addr: 192.168.1.99/24
     gateway: 192.168.1.1
     time_zone: Europe/Amsterdam
-    host_name: cloud.example.com
+    domain_name: cloud.example.com
     link_mariadb: mariadbjail
     admin_password: "PUTYOUROWNADMINPASSWORDHERE"
     mariadb_password: "PLEASEALSOPUTYOURPASSWORDHEREADIFFERNTONE"
@@ -79,7 +79,7 @@ jail:
     ip4_addr: 192.168.1.98/24
     gateway: 192.168.1.1
     root_password: ReplaceThisWithYourOwnRootPAssword
-    host_name: mariadb.local.example
+    domain_name: mariadb.local.example
 
   bitwardenjail:
     blueprint: bitwarden

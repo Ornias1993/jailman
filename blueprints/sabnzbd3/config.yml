@@ -1,3 +1,4 @@
 blueprint:
   sabnzbd3:
+    traefik_service_port: 8080
     pkgs: git python3 py37-pip py37-sqlite3 unrar par2cmdline-tbb p7zip

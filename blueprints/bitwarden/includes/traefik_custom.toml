@@ -1,0 +1,24 @@
+[http]
+    [http.routers]
+       [http.routers.placeholdername-ui]
+          rule = "Host(`placeholderdashboardhost`)"
+          service = "placeholdername-ui"
+          entryPoints = ["web-secure"]
+          middlewares = ["retry"]
+        [http.routers.placeholdername-ui.tls]
+          certResolver = "default" # From static configuration
+       [http.routers.placeholdername-websocket]
+          rule = "Host(`placeholderdashboardhost`) && Path(`/notifications/hub`)"
+          service = "placeholdername-websocket"
+          entryPoints = ["web-secure"]
+          middlewares = ["retry"]
+        [http.routers.placeholdername-websocket.tls]
+          certResolver = "default" # From static configuration
+    [http.services]
+        [http.services.placeholdername-ui.loadbalancer]
+            [[http.services.placeholdername-ui.loadbalancer.servers]]
+                url = "http://placeholderurl:8000"
+        [http.services.placeholdername-websocket.loadbalancer]
+            [[http.services.placeholdername-websocket.loadbalancer.servers]]
+                url = "http://placeholderurl:3012"
+

@@ -210,9 +210,13 @@ fi
 # If the default config requires post-processing (it always does except for user-custom config in /config), do the post processing.
 if [ "${traefikstatus}" = "preinstalled" ]; then
 	# replace placeholder values.
-	sed -i '' "s|placeholderdashboardhost|${domain_name}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
-	sed -i '' "s|placeholdername|${1}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
-	sed -i '' "s|placeholderurl|${jail_ip}:${traefik_service_port}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+	sed -i '' "s|placeholderdashboardhost|${domain_name//&/\\&}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+	sed -i '' "s|placeholdername|${1//&/\\&}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+	if [ -z "${traefik_service_port}" ]; then
+		sed -i '' "s|placeholderurl|${jail_ip}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+	else
+		sed -i '' "s|placeholderurl|${jail_ip}:${traefik_service_port}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
+	fi
 	# also replace auth related placeholders, because they can be part of custom config files
 	sed -i '' "s|placeholderusers|${traefik_auth_basic}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml
 	sed -i '' "s|placeholderauthforward|${traefik_auth_forward}|" /mnt/"${global_dataset_config}"/"${link_traefik}"/temp/"${1}".toml

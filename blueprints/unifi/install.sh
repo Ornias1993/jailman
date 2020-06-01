@@ -9,10 +9,6 @@ influxdb_database="${influxdb_database:-$1}"
 influxdb_user="${influxdb_user:-$influxdb_database}"
 poller_user="${poller_user:-$1}"
 
-#TODO LINK
-DB_IP="jail_${link_influxdb}_ip4_addr"
-DB_IP="${!DB_IP%/*}"
-
 # Enable persistent Unifi Controller data
 iocage exec "${1}" mkdir -p /config/controller/mongodb
 iocage exec "${1}" cp -Rp /usr/local/share/java/unifi /config/controller
@@ -45,7 +41,7 @@ else
   echo "Installing Unifi Poller..."
   echo "Checking if the database jail and database exist..."
   if [[ -d /mnt/"${global_dataset_iocage}"/jails/"${link_influxdb}" ]]; then
-    DB_EXISTING=$(iocage exec "${link_influxdb}" curl -G http://"${DB_IP}":8086/query --data-urlencode 'q=SHOW DATABASES' | jq '.results [] | .series [] | .values []' | grep "$influxdb_database" | sed 's/"//g' | sed 's/^ *//g')
+    DB_EXISTING=$(iocage exec "${link_influxdb}" curl -G http://"${link_influxdb_ip4_addr%/*}":8086/query --data-urlencode 'q=SHOW DATABASES' | jq '.results [] | .series [] | .values []' | grep "$influxdb_database" | sed 's/"//g' | sed 's/^ *//g')
     if [[ "$influxdb_database" == "$DB_EXISTING" ]]; then
       echo "${link_influxdb} jail with database ${influxdb_database} already exists. Skipping database creation... "
     else
@@ -55,7 +51,7 @@ else
         exit 1
       else
         # shellcheck disable=SC2027,2086
-        iocage exec "${link_influxdb}" "curl -XPOST -u ${influxdb_user}:${influxdb_password} http://"${DB_IP}":8086/query --data-urlencode 'q=CREATE DATABASE ${influxdb_database}'"
+        iocage exec "${link_influxdb}" "curl -XPOST -u ${influxdb_user}:${influxdb_password} http://"${link_influxdb_ip4_addr%/*}":8086/query --data-urlencode 'q=CREATE DATABASE ${influxdb_database}'"
         echo "Database ${influxdb_database} created with username ${influxdb_user} with password ${influxdb_password}."
       fi
     fi
@@ -79,7 +75,7 @@ else
   iocage exec "${1}" sed -i '' "s|unifidb|${influxdb_database}|" /config/up.conf
   iocage exec "${1}" sed -i '' "s|unifiuser|${poller_user}|" /config/up.conf
   iocage exec "${1}" sed -i '' "s|unifipassword|${poller_password}|" /config/up.conf
-  iocage exec "${1}" sed -i '' "s|dbip|http://${DB_IP}:8086|" /config/up.conf
+  iocage exec "${1}" sed -i '' "s|dbip|http://${link_influxdb_ip4_addr%/*}:8086|" /config/up.conf
 
 
   iocage exec "${1}" sysrc unifi_poller_enable=YES
