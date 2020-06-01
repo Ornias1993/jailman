@@ -5,10 +5,16 @@
 initblueprint "$1"
 
 # Initialise defaults
+hw_transcode_ruleset="${hw_transcode_ruleset:-10}"
+script_default_path="/root/plex-ruleset.sh"
+ruleset_script="${ruleset_script:-$script_default_path}"
 
-iocage exec plex mkdir -p /usr/local/etc/pkg/repos
+# Source additional files with functions
+# shellcheck source=blueprints/plex/includes/hw_transcoding.sh
+source "${includes_dir}/hw_transcoding.sh"
 
 # Change to to more frequent FreeBSD repo to stay up-to-date with plex more.
+iocage exec plex mkdir -p /usr/local/etc/pkg/repos
 cp "${includes_dir}"/FreeBSD.conf /mnt/"${global_dataset_iocage}"/jails/"$1"/root/usr/local/etc/pkg/repos/FreeBSD.conf
 
 
@@ -25,6 +31,18 @@ else
 	iocage fstab -a "$1" tmpfs /tmp_transcode tmpfs rw,size="${plex_ramdisk}",mode=1777 0 0
 fi
 
+# Create and install hardware transcoding ruleset script
+if [ -z "${hw_transcode}" ] || [ "${hw_transcode}" = "false" ]; then
+  echo "Not configuring hardware transcode"
+else
+  if createrulesetscript "${hw_transcode_ruleset}" "${ruleset_script}"; then
+    echo "Configuring hardware transcode with ruleset ${hw_transcode_ruleset}."
+	iocage set devfs_ruleset="${hw_transcode_ruleset}" "${1}"
+  else
+    echo "Not configuring hardware transcode automatically, please do it manually."
+  fi
+fi
+
 iocage exec "$1" chown -R plex:plex /config
 
 # Force update pkg to get latest plex version
@@ -33,6 +51,9 @@ iocage exec "$1" pkg upgrade -y
 
 # Add plex user to video group for future hw-encoding support
 iocage exec "$1" pw groupmod -n video -m plex
+
+# Add plex user to media group for media accessible
+iocage exec "$1" pw groupmod -n media -m plex
 
 # Run different install procedures depending on Plex vs Plex Beta
 if [ "$beta" == "true" ]; then
@@ -49,4 +70,14 @@ else
 	iocage exec "$1" service plexmediaserver restart
 fi
 
-exitblueprint "$1" "Plex is now accessible at https://${jail_ip}:32400/web/"
+# Work around a FreeBSD 11.3 devfs issue
+if [ -z "${hw_transcode}" ] || [ "${hw_transcode}" = "false" ]; then
+  iocage stop "${1}"
+  service devfs restart
+  iocage start "${1}"
+else
+  iocage restart "${1}"
+fi
+
+exitblueprint "${1}" "Plex is now accessible at http://${jail_ip}:32400/web/"
+
