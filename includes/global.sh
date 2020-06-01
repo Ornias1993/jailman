@@ -129,7 +129,7 @@ initblueprint() {
 	blueprint=jail_${1}_blueprint
 	varlist=blueprint_${!blueprint}_vars
 
-	for var in ${!varlist} ${global_jails_vars}
+	for var in ${!varlist:-} ${global_jails_vars}
 	do
 		value="jail_${1}_$var"
 		val=${!value:-}
@@ -148,6 +148,8 @@ initblueprint() {
 		fi
 	done
 
+	declare -g "jail_root=/mnt/${global_dataset_iocage}/jails/$1/root"
+	declare -g "blueprint_dir=${SCRIPT_DIR}/blueprints/${!blueprint}"
 	declare -g "includes_dir=${SCRIPT_DIR}/blueprints/${!blueprint}/includes"
 
 	if [ -f "/mnt/${global_dataset_config}/${1}/INSTALLED" ]; then
