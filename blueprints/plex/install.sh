@@ -37,7 +37,7 @@ if [ -z "${hw_transcode}" ] || [ "${hw_transcode}" = "false" ]; then
 else
   if createrulesetscript "${hw_transcode_ruleset}" "${ruleset_script}"; then
     echo "Configuring hardware transcode with ruleset ${hw_transcode_ruleset}."
-	iocage set devfs_ruleset="${hw_transcode_ruleset}" " ${1}"
+	iocage set devfs_ruleset="${hw_transcode_ruleset}" "${1}"
   else
     echo "Not configuring hardware transcode automatically, please do it manually."
   fi
@@ -79,5 +79,5 @@ else
   iocage restart "${1}"
 fi
 
-exitblueprint "$1" "Plex is now accessible at https://${jail_ip}:32400/web/"
+exitblueprint "${1}" "Plex is now accessible at https://${jail_ip}:32400/web/"
 
