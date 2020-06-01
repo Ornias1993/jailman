@@ -11,3 +11,4 @@
 /blueprints/forked_daapd/ @asmod3us
 /blueprints/sabnzbd/ @asmod3us
 /blueprints/sabnzbd3/ @asmod3us
+/blueprints/plex/includes/hw_transcoding.sh @thorsteneb

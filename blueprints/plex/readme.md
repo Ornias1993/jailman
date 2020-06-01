@@ -2,7 +2,6 @@
 
 ### Config Parameters:
 - beta: set to `true` if you want to run the plex beta (previously known as "plexpass"). Please note: This is not required for plexpass features
-- ramdisk: set to a size in MB if you want to use a ramdisk for plex transcodes
 
 #### Advanced config parameters:
 - ramdisk: Specify the `size` parameter to create a transcoding ramdisk under /tmp_transcode. Requires manual setting it un plex to be used for transcoding. (optional)
