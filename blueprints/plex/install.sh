@@ -79,5 +79,5 @@ else
   iocage restart "${1}"
 fi
 
-exitblueprint "${1}" "Plex is now accessible at https://${jail_ip}:32400/web/"
+exitblueprint "${1}" "Plex is now accessible at http://${jail_ip}:32400/web/"
 
