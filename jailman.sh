@@ -157,6 +157,16 @@ if [ ${#installjails[@]} -gt 0 ]; then
 			exit 1
 		elif [ -f "${SCRIPT_DIR}/blueprints/${!blueprint}/install.sh" ]
 		then
+
+			# check blueprint install script for syntax errors
+			blueprint_installer="${SCRIPT_DIR}/blueprints/${!blueprint}/install.sh"
+			if ! bash -n "${blueprint_installer}" 2>/dev/null; then
+				echo "ERR: Blueprint install script at ${blueprint_installer} has syntax errors."
+				echo "Please report this issue to the maintainer according to docs/CODEOWNERS."
+				echo "Will not continue."
+				exit 1
+			fi
+
 			echo "Installing $jail"
 			jailcreate "${jail}" "${!blueprint}" && "${SCRIPT_DIR}"/blueprints/"${!blueprint}"/install.sh "${jail}"
 		else
