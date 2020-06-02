@@ -29,7 +29,7 @@ iocage exec "$1" sysrc "sabnzbd_enable=YES"
 
 # start once to let service write default config
 iocage exec "$1" service sabnzbd start
-iocage exec "$1" service sabnzbd stop
+iocage exec "$1" service sabnzbd stop || true
 
 # put our config in place
 iocage exec "$1" sed -i '' -e 's?host = 127.0.0.1?host = 0.0.0.0?g' /config/sabnzbd.ini

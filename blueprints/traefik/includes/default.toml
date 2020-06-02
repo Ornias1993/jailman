@@ -4,7 +4,7 @@
           rule = "Host(`placeholderdashboardhost`)"
           service = "placeholdername"
           entryPoints = ["web-secure"]
-		  middlewares = ["retry"]
+          middlewares = ["retry"]
         [http.routers.placeholdername.tls]
           certResolver = "default" # From static configuration
     [http.services]
