@@ -21,7 +21,7 @@ jailcreate() {
 	jailip4="jail_${jail}_ip4_addr"
 	jailgateway="jail_${jail}_gateway"
 	jaildhcp="jail_${jail}_dhcp"
-	setdhcp=${!jaildhcp}
+	setdhcp=${!jaildhcp:-}
 	blueprintextraconf="blueprint_${blueprint}_custom_iocage"
 	jailextraconf="jail_${jail}_custom_iocage"
 	setextra="${!blueprintextraconf:-}${!jailextraconf:+ ${!jailextraconf}}"
