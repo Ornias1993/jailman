@@ -15,14 +15,19 @@ initblueprint() {
 
 	for var in ${!varlist:-} ${global_jails_vars}
 	do
-		value="jail_${1}_$var"
+		value="jail_${jail_name}_$var"
 		val=${!value:-}
 		declare -g "${var}=${val}"
 
-		if [[ "${var}" =~ ^link_.* ]];
+		if [[ "${var}" =~ ^link_.* ]] && [[ -n "${val}" ]];
 		then
 			linkblueprint=jail_${val}_blueprint
-			linkvarlist=blueprint_${!linkblueprint}_vars
+			linkblueprint_name=${!linkblueprint:-}
+			if [ -z "${linkblueprint_name}" ]; then
+				echo "ERR: a link to $val was requested but no blueprint was found for it"
+			fi
+
+			linkvarlist=blueprint_${linkblueprint_name}_vars
 			for linkvar in ${!linkvarlist} ${global_jails_vars}
 			do
 				linkvalue="jail_${val}_${linkvar}"
