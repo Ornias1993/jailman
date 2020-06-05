@@ -2,3 +2,4 @@ blueprint:
   transmission:
     traefik_service_port: 9091
     pkgs: bash unzip unrar transmission
+

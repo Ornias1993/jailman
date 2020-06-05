@@ -3,3 +3,4 @@ blueprint:
     traefik_service_port: 32400
     pkgs: plexmediaserver
     vars: beta ramdisk hw_transcode hw_transcode_ruleset ruleset_script
+

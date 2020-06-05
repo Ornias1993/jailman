@@ -3,3 +3,4 @@ blueprint:
     pkgs: nano
     vars: testvar testvar2 link_testjail
     reqvars: testvar
+

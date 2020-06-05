@@ -1,4 +1,5 @@
 blueprint:
-  bazarr: bazarr
+  bazarr:
     traefik_service_port: 6767
     pkgs: git python3 py37-pip py37-libxml2 libxslt py37-sqlite3
+

@@ -3,13 +3,13 @@ global:
   version: 1.3
   # Relevant dataset paths, please use the ZFS dataset syntax such as: tank/apps
   dataset:
-   # dataset for internal jail config files
-   config: tank/apps
-   # Media library dataset
-   media: tank/media
-   # Parent downloads dataset 
-   # (is going to contain: Complete and Incomplete datasets for downloads)
-   downloads: tank/downloads
+    # dataset for internal jail config files
+    config: tank/apps
+    # Media library dataset
+    media: tank/media
+    # Parent downloads dataset
+    # (is going to contain: Complete and Incomplete datasets for downloads)
+    downloads: tank/downloads
 
 jail:
   plexjail:

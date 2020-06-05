@@ -2,3 +2,4 @@ blueprint:
   sonarr:
     traefik_service_port: 8989
     pkgs: mono mediainfo sqlite3
+

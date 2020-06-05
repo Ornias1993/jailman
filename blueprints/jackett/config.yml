@@ -2,3 +2,4 @@ blueprint:
   jackett:
     traefik_service_port: 9117
     pkgs: mono
+
